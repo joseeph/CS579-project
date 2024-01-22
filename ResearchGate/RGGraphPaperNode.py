@@ -1,0 +1,3 @@
+from ResearchGate.RGGraphNodeBase import RGGraphNodeBase
+
+class RGGraphPaperNode(RGGraphNodeBase)
