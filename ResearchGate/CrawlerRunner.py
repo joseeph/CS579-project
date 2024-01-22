@@ -1,4 +1,4 @@
-from Crawlers.CrawlerBase import CrawlerBase
+from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
 from ResearchGate.RGNodeContainer import RGNodeContainer
 class CrawlerRunner:
     def __init__(self) -> None:
@@ -10,7 +10,7 @@ class CrawlerRunner:
         pass
 
 
-    def BeginCrawl(self, crawler :CrawlerBase, begin_url):
+    def BeginCrawl(self, crawler :CrawlerDriverBase, begin_url):
         while self.NodeContainer.GetNodeCount() < self.MaxNode:
             content = crawler.Get(begin_url)
             

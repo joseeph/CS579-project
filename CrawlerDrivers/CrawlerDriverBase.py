@@ -1,4 +1,4 @@
-class CrawlerBase:
+class CrawlerDriverBase:
     def __init__(self) -> None:
         pass
 
