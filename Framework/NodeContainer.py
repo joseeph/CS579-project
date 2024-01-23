@@ -1,7 +1,7 @@
 from ResearchGate.RGGraphPersonNode import RGGraphPersonNode
 from ResearchGate.RGGraphPaperNode import RGGraphPaperNode
 
-class RGNodeContainer:
+class NodeContainer:
     def __init__(self) -> None:        
         self.PersonList = []
         self.PaperList = []

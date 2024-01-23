@@ -1,11 +1,11 @@
-from ResearchGate.CrawlContext import CrawlContext
-from ResearchGate.RGGraphCrawlerBase import RGGraphCrawlerBase
+from Framework.CrawlContext import CrawlContext
+from Framework.CrawlerBase import CrawlerBase
 from ResearchGate.RGGraphPersonNode import RGGraphPersonNode
-from ResearchGate.RGNodeContainer import RGNodeContainer
+from Framework.NodeContainer import NodeContainer
 import re
 import json
 
-class RGGraphPaperNode(RGGraphCrawlerBase):
+class RGGraphPaperNode(CrawlerBase):
     def __init__(self) -> None:
         super().__init__()
         self.DOI = ""

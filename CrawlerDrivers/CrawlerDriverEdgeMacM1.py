@@ -1,7 +1,7 @@
 from selenium import webdriver
 from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
 
-class CrawlerDriverMacM1(CrawlerDriverBase):
+class CrawlerDriverEdgeMacM1(CrawlerDriverBase):
     def __init__(self) -> None:
         super().__init__()
                 

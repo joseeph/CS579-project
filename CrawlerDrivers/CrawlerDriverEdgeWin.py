@@ -2,7 +2,7 @@ from selenium import webdriver
 from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
 
 
-class CrawlerDriverWin(CrawlerDriverBase):
+class CrawlerDriverEdgeWin(CrawlerDriverBase):
     def __init__(self) -> None:
         super().__init__()
 

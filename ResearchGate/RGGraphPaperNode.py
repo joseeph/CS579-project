@@ -1,6 +1,6 @@
-from ResearchGate.RGGraphDataNodeBase import RGGraphDataNodeBase
+from Framework.GraphDataNodeBase import GraphDataNodeBase
 
-class RGGraphPaperNode(RGGraphDataNodeBase):
+class RGGraphPaperNode(GraphDataNodeBase):
     def __init__(self) -> None:
         super().__init__()
         self.DOI = ""

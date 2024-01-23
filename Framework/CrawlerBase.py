@@ -1,6 +1,6 @@
-from ResearchGate.CrawlContext import CrawlContext
+from Framework.CrawlContext import CrawlContext
 from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
-class RGGraphCrawlerBase:
+class CrawlerBase:
     def __init__(self) -> None:
         self.URL = ""
         pass
