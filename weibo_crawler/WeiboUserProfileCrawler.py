@@ -18,4 +18,5 @@ class WeiboUserProfileCrawler(CrawlerBase):
         if node == None:
             raise BaseException("UserID不对")
         node.SetNickname(nickname)
+
         pass
