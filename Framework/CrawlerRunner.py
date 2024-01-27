@@ -2,20 +2,21 @@ from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
 from Framework.CrawlContext import CrawlContext
 from Framework.NodeContainer import NodeContainer
 from Framework.CrawlerBase import CrawlerBase
+from time import sleep
 class CrawlerRunner:
-    def __init__(self) -> None:
+    def __init__(self,  CrawlerDriver : CrawlerDriverBase) -> None:
         # 最大节点数
         self.MaxNode = 500        
+        self.SleepTime = 1
         # 爬虫队列
         self.CrawlerQueue = []
         self.NodeContainer = NodeContainer()
         self.Context = CrawlContext()
-        self.Context.Init(self.NodeContainer)
-        self.CrawlerDriver = None
-        pass
-
-    def SetCrawlerDriver(self, CrawlerDriver : CrawlerDriverBase):
+        self.Context.Init(self.NodeContainer, CrawlerDriver, self.CrawlerQueue)
         self.CrawlerDriver = CrawlerDriver
+        
+    def SetSleepTime(self, sleep_time):
+        self.SleepTime = sleep_time
 
     def AddCrawler(self, Crawler :CrawlerBase):
         '''
@@ -46,5 +47,8 @@ class CrawlerRunner:
             
             # 获得下一个爬虫
             CurCrawler = self.GetNextCrawler()
+            self.Context.CrawlerQueue = self.CrawlerQueue
             CurCrawler.Crawl(self.Context, self.CrawlerDriver )
+            sleep(self.SleepTime)
+            
             

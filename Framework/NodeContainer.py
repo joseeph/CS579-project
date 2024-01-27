@@ -1,59 +1,56 @@
+from Framework.GraphDataNodeBase import GraphDataNodeBase
 from ResearchGate.RGGraphPersonNode import RGGraphPersonNode
 from ResearchGate.RGGraphPaperNode import RGGraphPaperNode
 
 class NodeContainer:
     def __init__(self) -> None:        
-        self.PersonList = []
-        self.PaperList = []
+        self.NodeList = []
         pass
     
     def GetNodeCount(self):
         '''
-        获得节点数量
+        get all the node number
         '''
-        person_count = len(self.PersonList)
-        paper_count = len(self.PaperList)
-        return person_count + paper_count
+        node_count = len(self.NodeList)
+        return node_count
 
-    def SearchPersonNode(self, url):
+    def IsNodeExist(self, node :GraphDataNodeBase):
+        for cur_node in self.NodeList:
+            cur_uname = cur_node.GetUniqueString() 
+            if node.GetUniqueString() == cur_uname:
+                return True
+        return False
+    
+    def InNodeExistByUStr(self, node_ustr):
+        idx = self.FindNodeIndex(node_ustr)
+        return idx >= 0
+    
+    def FindNodeIndex(self, node_ustr):
+        for cur_idx in range(len(self.NodeList)):
+            cur_node = self.NodeList[cur_idx]
+            cur_uname = cur_node.GetUniqueString() 
+            if node_ustr == cur_uname:
+                return cur_idx            
+        return -1
+    
+    def FindNode(self, node_ustr):
         '''
-        搜索person节点
+        search the node by unique string
         '''
-        person_node :RGGraphPersonNode = None
-        for person_node in self.PersonList:
-            cur_url = person_node.GetURL()
-            if cur_url == url:
-                return person_node
-        return None
-        
-    def SearchPaperNode(self, doi):
-        paper_node :RGGraphPaperNode = None
-        for paper_node in self.PaperList:
-            cur_doi = paper_node.GetDOI()
-            if cur_doi == doi:
-                return paper_node
-        return paper_node
+        idx = self.FindNodeIndex(node_ustr)
+        if idx >= 0:
+            return self.NodeList[idx]
+        else:
+            return None
 
-    def AddPerson(self, node :RGGraphPersonNode):
-        '''
-        添加 person节点
-        '''
-        found_node :RGGraphPersonNode = self.SearchPersonNode(node.GetURL())
-        if found_node != None:
-            self.PersonList.remove(found_node)
+    def AddNode(self, node :GraphDataNodeBase):
+        idx = self.FindNodeIndex(node.GetUniqueString())
+        if idx >= 0:
+            self.NodeList.pop(idx)
+        self.NodeList.append(node)
+        print("添加数据节点：" + node.GetUniqueString() + " 现在数量为：" + str(len(self.NodeList)))
 
-        self.PersonList.append(node)
-        
-
-    def AddPaper(self, node :RGGraphPaperNode):
-        '''
-        添加paper节点
-        '''
-        found_node :RGGraphPaperNode = self.SearchPaperNode(node.GetDOI())
-        if found_node != None:
-            self.PaperList.remove(found_node)
-        self.PaperList.append(node)
-        
+        pass 
 
     def Save(self, filepath):
         '''

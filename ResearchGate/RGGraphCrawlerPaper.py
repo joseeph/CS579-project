@@ -33,7 +33,7 @@ class RGGraphPaperNode(CrawlerBase):
             author_url = authors_json[k]['url']
             person_node = RGGraphPersonNode()
             person_node.Init(author_type, author_name, author_url)
-            context.NodeContainer.AddPerson(person_node)
+            context.DataContainer.AddPerson(person_node)
             pass
 
         
