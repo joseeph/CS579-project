@@ -14,9 +14,11 @@ def Main(config_path):
     user_id = user_id_list[0]
     driver = CrawlerDriverForWeibo(cookie)
     Runner = CrawlerRunner(driver)
+    Runner.SetMaxNode(1)
     first_crawler = WeiboFollowingPageNumberCrawler(user_id)
-    Runner.AddCrawler(first_crawler)
+    Runner.AddDataCrawler(first_crawler)
     Runner.BeginCrawl()
+    Runner.NodeContainer.Save("./result.xml")
     
 
 

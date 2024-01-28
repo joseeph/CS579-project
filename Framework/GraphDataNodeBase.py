@@ -4,3 +4,10 @@ class GraphDataNodeBase:
 
     def GetUniqueString(self):
         raise NotImplementedError
+    
+
+    def Serialize(self, node):
+        raise NotImplementedError
+    
+    def Unserialize(self, node):
+        raise NotImplementedError

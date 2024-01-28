@@ -1,7 +1,5 @@
 from Framework.GraphDataNodeBase import GraphDataNodeBase
-from ResearchGate.RGGraphPersonNode import RGGraphPersonNode
-from ResearchGate.RGGraphPaperNode import RGGraphPaperNode
-
+from xml.etree import ElementTree as ET
 class NodeContainer:
     def __init__(self) -> None:        
         self.NodeList = []
@@ -56,8 +54,30 @@ class NodeContainer:
         '''
         保存所有节点
         '''
+        node_root = ET.Element("DataNodes")
+        # 序列化
+        self.Serialize(node_root)
 
-
-
-
+        # 存盘
+        s = ET.tostring(node_root, encoding='utf-8', method='xml')
+        s = s.decode('utf-8')
+        f = open(filepath, "w", encoding='utf-8')
+        f.write(s)
+        f.close()
         pass
+
+    def Load(self, filepath):
+        '''
+        读取所有节点
+        '''
+        
+        
+        pass
+
+    def Serialize(self, xml_node :ET.Element):
+        nodelist_ele = ET.Element("NodeList")
+        xml_node.append(nodelist_ele)
+
+        data_node :GraphDataNodeBase
+        for data_node in self.NodeList:
+            data_node.Serialize(nodelist_ele)

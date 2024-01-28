@@ -23,6 +23,7 @@ class WeiboFollowingsInPageCrawler(CrawlerBase):
         parse the following users from the current page
         '''
         selector = etree.HTML(s)
+        # the node of this user id is already created in WeiboFollowingPageNumberCrawler
         cur_node :WeiboUserDataNode = context.DataContainer.FindNode(self.UserID)
         if cur_node == None:
             raise BaseException("WeiboFollowingsInPageCrawler: The User ID is not saved!!!")
@@ -39,9 +40,8 @@ class WeiboFollowingsInPageCrawler(CrawlerBase):
                 cur_node.AddFollowing(user_id)
 
                 #nickname = t.xpath('.//a/text()')[0]
-                if not context.DataContainer.InNodeExistByUStr(user_id):
-                    # if the follower is not visited, create new crawler for this user
-                    from weibo_crawler.WeiboFollowingPageNumberCrawler import WeiboFollowingPageNumberCrawler
-                    pagenum_crawler = WeiboFollowingPageNumberCrawler(user_id)
-                    context.AddCrawler(pagenum_crawler)
+                # the 
+                from weibo_crawler.WeiboFollowingPageNumberCrawler import WeiboFollowingPageNumberCrawler
+                pagenum_crawler = WeiboFollowingPageNumberCrawler(user_id)
+                context.AddDataCrawler(pagenum_crawler)
 

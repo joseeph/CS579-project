@@ -9,6 +9,12 @@ class CrawlerBase:
     def SetURL(self, url):
         self.URL = url
 
+    def IsEnabled(self, context :'CrawlContext'):
+        '''
+        this crawler can be disabled
+        '''
+        return True
+
     def Crawl(self, context :'CrawlContext', crawler_driver :CrawlerDriverBase):
         # 网络端获取url的网页数据
         s = crawler_driver.Get(self.URL)

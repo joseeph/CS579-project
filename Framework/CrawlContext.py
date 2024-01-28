@@ -3,16 +3,20 @@ class CrawlContext:
     def __init__(self) -> None:
         self.DataContainer = None
         self.CrawlerDriver = None
-        self.CrawlerQueue = []
+        self.Crawlers = []        
         pass
 
-    def Init(self, container : 'NodeContainer', crawler_driver : 'CrawlerDriverBase', crawler_queue):
+    def Init(self, container : 'NodeContainer', crawler_driver : 'CrawlerDriverBase', crawler_queue :'Framework.CrawlerQueue.CrawlerQueue'):
         self.DataContainer = container
         self.CrawlerDriver = crawler_driver
-        self.CrawlerQueue = crawler_queue
+        self.Crawlers = crawler_queue
+        
 
-    def AddCrawler(self, crawler :'CrawlerBase'):
+    def AddDataCrawler(self, crawler :'CrawlerBase'):
         '''
         add a crawler at the end of the q
         '''
-        self.CrawlerQueue.append(crawler)
+        self.Crawlers.AddDataCrawler(crawler)
+
+    def AddInfoCrawler(self, crawler :'CrawlerBase'):
+        self.Crawlers.AddInfoCrawler(crawler)

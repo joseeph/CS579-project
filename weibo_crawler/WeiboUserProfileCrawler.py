@@ -2,7 +2,7 @@ from Framework.CrawlContext import CrawlContext
 from Framework.CrawlerBase import CrawlerBase
 from Framework.NodeContainer import NodeContainer
 from lxml import etree
-import re
+import html
 
 from weibo_crawler.WeiboUserDataNode import WeiboUserDataNode
 class WeiboUserProfileCrawler(CrawlerBase):
@@ -17,6 +17,7 @@ class WeiboUserProfileCrawler(CrawlerBase):
         node : WeiboUserDataNode= context.DataContainer.FindNode(self.UserID)
         if node == None:
             raise BaseException("UserID不对")
+
         node.SetNickname(nickname)
 
         pass

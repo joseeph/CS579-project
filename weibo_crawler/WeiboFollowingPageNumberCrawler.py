@@ -10,6 +10,14 @@ class WeiboFollowingPageNumberCrawler(CrawlerBase):
         self.UserID = user_id
         self.SetURL("https://weibo.cn/%s/follow" % self.UserID)
 
+    def IsEnabled(self, context :CrawlContext):
+        # if the node is already created, then we don't crawl this user again
+        node = context.DataContainer.FindNode(self.UserID)
+        if node != None:
+            return False
+        return True
+        
+
     def Parse(self, context :CrawlContext, s):
         selector = etree.HTML(s)
         # the page number of the followings of this user
@@ -27,13 +35,13 @@ class WeiboFollowingPageNumberCrawler(CrawlerBase):
         # firstly crawl the user's profile
         from weibo_crawler.WeiboUserProfileCrawler import WeiboUserProfileCrawler
         crawler = WeiboUserProfileCrawler(self.UserID)
-        context.AddCrawler(crawler)
+        context.AddInfoCrawler(crawler)
 
         # now we get how many pages of followings, now crawl these pages one by one
         for page_id in range(1, page_num + 1):
             from weibo_crawler.WeiboFollowingsInPageCrawler import WeiboFollowingsInPageCrawler
             crawler = WeiboFollowingsInPageCrawler(self.UserID, page_id)
-            context.AddCrawler(crawler)
+            context.AddInfoCrawler(crawler)
 
 
    
