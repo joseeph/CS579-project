@@ -1,11 +1,12 @@
 from Framework.CrawlContext import CrawlContext
-from Framework.CrawlerBase import CrawlerBase
+
 from Framework.NodeContainer import NodeContainer
 from lxml import etree
 import html
+from Framework.InfoCrawlerBase import InfoCrawlerBase
 
 from weibo_crawler.WeiboUserDataNode import WeiboUserDataNode
-class WeiboUserProfileCrawler(CrawlerBase):
+class WeiboUserProfileCrawler(InfoCrawlerBase):
     def __init__(self, user_id) -> None:
         super().__init__()
         self.UserID = user_id

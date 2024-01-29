@@ -90,10 +90,11 @@ class Follow(object):
         page_num = self.get_page_num()
         print(u'用户关注页数：' + str(page_num))
         page1 = 0
+        # 每爬几页sleep一次
         random_pages = random.randint(1, 5)
         for page in tqdm(range(1, page_num + 1), desc=u'关注列表爬取进度'):
             self.get_one_page(page)
-
+            #  达到休息的时长，并且不是最后一页page，则sleep6到10秒
             if page - page1 == random_pages and page < page_num:
                 sleep(random.randint(6, 10))
                 page1 = page

@@ -1,13 +1,14 @@
 
 
 from Framework.CrawlContext import CrawlContext
-from Framework.CrawlerBase import CrawlerBase
+
 from lxml import etree
+from Framework.InfoCrawlerBase import InfoCrawlerBase
 
 
 from weibo_crawler.WeiboUserDataNode import WeiboUserDataNode
 
-class WeiboFollowingsInPageCrawler(CrawlerBase):
+class WeiboFollowingsInPageCrawler(InfoCrawlerBase):
     '''
     Crawl the followews in one page
     '''
@@ -26,7 +27,7 @@ class WeiboFollowingsInPageCrawler(CrawlerBase):
         # the node of this user id is already created in WeiboFollowingPageNumberCrawler
         cur_node :WeiboUserDataNode = context.DataContainer.FindNode(self.UserID)
         if cur_node == None:
-            raise BaseException("WeiboFollowingsInPageCrawler: The User ID is not saved!!!")
+            raise BaseException("WeiboFollowingsInPageCrawler: user data node is not found!")
         
         table_list = selector.xpath('//table')
         if (self.PageID == 1 and len(table_list) == 0):
@@ -41,6 +42,7 @@ class WeiboFollowingsInPageCrawler(CrawlerBase):
 
                 #nickname = t.xpath('.//a/text()')[0]
                 # the 
+
                 from weibo_crawler.WeiboFollowingPageNumberCrawler import WeiboFollowingPageNumberCrawler
                 pagenum_crawler = WeiboFollowingPageNumberCrawler(user_id)
                 context.AddDataCrawler(pagenum_crawler)

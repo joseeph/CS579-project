@@ -1,9 +1,9 @@
 from Framework.CrawlContext import CrawlContext
-from Framework.CrawlerBase import CrawlerBase
+from Framework.NodeCrawlerBase import NodeCrawlerBase
 from weibo_crawler.WeiboUserDataNode import WeiboUserDataNode
 from lxml import etree
 
-class WeiboFollowingPageNumberCrawler(CrawlerBase):
+class WeiboFollowingPageNumberCrawler(NodeCrawlerBase):
     def __init__(self, user_id) -> None:
         super().__init__()
         # the use id
@@ -27,7 +27,8 @@ class WeiboFollowingPageNumberCrawler(CrawlerBase):
         else:
             page_num = (int)(selector.xpath("//input[@name='mp']")[0].attrib['value'])
         # I only create the User Data Node here
-        UserDataNode = WeiboUserDataNode(self.UserID)
+        UserDataNode = WeiboUserDataNode()
+        UserDataNode.SetUserID(self.UserID)
         if context.DataContainer.IsNodeExist( UserDataNode):
             raise BaseException("Already create the node!!!")
         # add the node to container

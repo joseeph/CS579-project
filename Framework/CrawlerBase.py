@@ -18,9 +18,12 @@ class CrawlerBase:
     def Crawl(self, context :'CrawlContext', crawler_driver :CrawlerDriverBase):
         # 网络端获取url的网页数据
         s = crawler_driver.Get(self.URL)
+        if s == b'':
+            return False
         # 交给派生类解析
         self.Parse(context, s)
-        pass
+        return True
+        
 
     def Parse(self, context :'CrawlContext', s):
         pass

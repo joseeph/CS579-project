@@ -16,7 +16,7 @@ class CrawlContext:
         '''
         add a crawler at the end of the q
         '''
-        self.Crawlers.AddDataCrawler(crawler)
+        self.Crawlers.AddNodeCrawler(crawler)
 
     def AddInfoCrawler(self, crawler :'CrawlerBase'):
         self.Crawlers.AddInfoCrawler(crawler)

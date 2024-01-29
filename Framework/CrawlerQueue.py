@@ -1,23 +1,27 @@
+from Framework.InfoCrawlerBase import InfoCrawlerBase
+from Framework.NodeCrawlerBase import NodeCrawlerBase
+
+
 class CrawlerQueue:
     def __init__(self) -> None:
-        self.DataCrawlers = []
+        self.NodeCrawlers = []
         self.InfoCrawlers = []
         pass
 
-    def AddDataCrawler(self ,crawler):
-        self.DataCrawlers.append(crawler)
+    def AddNodeCrawler(self ,crawler :NodeCrawlerBase):
+        self.NodeCrawlers.append(crawler)
 
-    def AddInfoCrawler(self, crawler):
+    def AddInfoCrawler(self, crawler :InfoCrawlerBase):
         self.InfoCrawlers.append(crawler)
 
-    def IsDataCrawlerEmpty(self):
-        return len(self.DataCrawlers) == 0
+    def IsNodeCrawlerEmpty(self):
+        return len(self.NodeCrawlers) == 0
     
     
-    def NextDataCrawler(self):
-        if len(self.DataCrawlers) == 0:
+    def NextNodeCrawler(self):
+        if len(self.NodeCrawlers) == 0:
             return None
-        crawler = self.DataCrawlers.pop(0)
+        crawler = self.NodeCrawlers.pop(0)
         return crawler
     
     def GetAllInfoCrawlers(self):
