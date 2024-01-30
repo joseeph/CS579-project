@@ -30,9 +30,11 @@ def Main(config_path):
     cookie = config['cookie']
     
     driver = CrawlerDriverForWeibo(cookie)
+    #driver.EnableProxy(True)
+
     save_path = "./result.xml"
     Runner = CrawlerRunner(driver, save_path)
-    Runner.SetMaxNode(500)
+    Runner.SetMaxNode(2000)
     node_factory = WeiboNodeFactory()
     Runner.LoadNodes(node_factory)
 
@@ -58,6 +60,15 @@ def Main3():
     node_factory = WeiboNodeFactory()
     node_container.Load("./result.xml", node_factory)
     pass
+
+def Main4(config_path):
+    config = None
+    with open(config_path) as f:        
+        config = json.loads(f.read())
+    cookie = config['cookie']
+    
+    driver = CrawlerDriverForWeibo(cookie)
+    driver.Get("https://weibo.cn/1708942053/")
 
 if __name__ == "__main__":
     Main("./weibo_crawler/config.json")

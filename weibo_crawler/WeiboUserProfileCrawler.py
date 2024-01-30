@@ -12,7 +12,11 @@ class WeiboUserProfileCrawler(InfoCrawlerBase):
         self.UserID = user_id
         self.SetURL("https://weibo.cn/%s/profile" % self.UserID)
 
-    def Parse(self, context: CrawlContext, s):       
+    def Parse(self, context: CrawlContext, s):   
+        if s.find(b"retcode=6102") >= 0:
+             print("cookie overtime!")
+             # 返回来的有问题，过一会重新请求
+             return False    
         selector = etree.HTML(s)
         nickname = selector.xpath('/html/body/div[4]/table/tr/td[2]/div/span[1]/text()[1]')[0]
         node : WeiboUserDataNode= context.DataContainer.FindNode(self.UserID)
@@ -21,4 +25,5 @@ class WeiboUserProfileCrawler(InfoCrawlerBase):
 
         node.SetNickname(nickname)
 
-        pass
+        return True
+        

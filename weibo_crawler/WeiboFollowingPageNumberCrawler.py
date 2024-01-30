@@ -43,24 +43,9 @@ class WeiboFollowingPageNumberCrawler(NodeCrawlerBase):
             from weibo_crawler.WeiboFollowingsInPageCrawler import WeiboFollowingsInPageCrawler
             crawler = WeiboFollowingsInPageCrawler(self.UserID, page_id)
             context.AddInfoCrawler(crawler)
-
+            
+        return True
 
    
 
-    def get_follow_list(self):
-        """获取关注用户主页地址"""
-        page_num = self.get_page_num()
-        print(u'用户关注页数：' + str(page_num))
-        # 随机挑选要的页码
-        page1 = 0
-        random_pages = random.randint(1, 5)
-        for page in tqdm(range(1, page_num + 1), desc=u'关注列表爬取进度'):
-            # 获取一页
-            self.get_one_page(page)
-            
-            if page - page1 == random_pages and page < page_num:
-                sleep(random.randint(6, 10))
-                page1 = page
-                random_pages = random.randint(1, 5)
-
-        print(u'用户关注列表爬取完毕')
+    

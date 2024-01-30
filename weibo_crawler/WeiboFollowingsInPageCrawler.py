@@ -31,7 +31,7 @@ class WeiboFollowingsInPageCrawler(InfoCrawlerBase):
         
         table_list = selector.xpath('//table')
         if (self.PageID == 1 and len(table_list) == 0):
-            print("invalid cookie or user_id")
+            print("No following found")
         else:
             for t in table_list:
                 im = t.xpath('.//a/@href')[-1]
@@ -41,9 +41,8 @@ class WeiboFollowingsInPageCrawler(InfoCrawlerBase):
                 cur_node.AddFollowing(user_id)
 
                 #nickname = t.xpath('.//a/text()')[0]
-                # the 
-
+                
                 from weibo_crawler.WeiboFollowingPageNumberCrawler import WeiboFollowingPageNumberCrawler
                 pagenum_crawler = WeiboFollowingPageNumberCrawler(user_id)
                 context.AddDataCrawler(pagenum_crawler)
-
+        return True

@@ -14,13 +14,23 @@ class CrawlerDriverForWeibo(CrawlerDriverBase):
                 'Cookie': cookie,
                 'Connection': 'close'
             }        
+        self.proxy = {
+            'http' : "socks5://127.0.0.1:10793",
+            'https' : "socks5://127.0.0.1:10793"
+        }
+        self.UseProxy = False
         self.RequestCount = 0
         self.LastSleepRequestIdx = 0
         self.SleepPerRequestCountNum = random.randint(1,5)
-    
+    def EnableProxy(self, enabled):
+        self.UseProxy = enabled
+
     def Get(self, url):
         try:            
-            html = requests.get(url, headers=self.Headers).content
+            if self.UseProxy:    
+                html = requests.get(url, proxies=self.proxy, headers=self.Headers).content
+            else:
+                html = requests.get(url, headers=self.Headers).content
             return html
         except Exception as e:
             print('Error: ', e)

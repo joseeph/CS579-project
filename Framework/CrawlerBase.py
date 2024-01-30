@@ -21,8 +21,8 @@ class CrawlerBase:
         if s == b'':
             return False
         # 交给派生类解析
-        self.Parse(context, s)
-        return True
+        succ = self.Parse(context, s)
+        return succ
         
 
     def Parse(self, context :'CrawlContext', s):
