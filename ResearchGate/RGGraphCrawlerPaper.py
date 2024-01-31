@@ -5,7 +5,7 @@ from Framework.NodeContainer import NodeContainer
 import re
 import json
 
-class RGGraphPaperNode(CrawlerBase):
+class RGGraphPaperCrawler(CrawlerBase):
     def __init__(self) -> None:
         super().__init__()
         self.DOI = ""
@@ -27,7 +27,7 @@ class RGGraphPaperNode(CrawlerBase):
         authors_json = json_result['author']
         author_cnt = len(authors_json)
         for k in range(author_cnt):
-            # 作者
+            # the authors
             author_type = authors_json[k]['@type']
             author_name = authors_json[k]['name']
             author_url = authors_json[k]['url']
@@ -35,9 +35,8 @@ class RGGraphPaperNode(CrawlerBase):
             person_node.Init(author_type, author_name, author_url)
             context.DataContainer.AddPerson(person_node)
             pass
-
         
-        pass
+        return True
 
     
     

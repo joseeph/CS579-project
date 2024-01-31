@@ -5,6 +5,11 @@ from ResearchGate.RGGraphCrawlerPaper import RGGraphPaperNode
 from Framework.CrawlContext import CrawlContext
 from Framework.NodeContainer import NodeContainer
 
+def Main1():
+    pass
+
+
+
 if __name__ == "__main__":
     crawler = CrawlerDriverEdgeWin()
     s = crawler.Get("https://www.researchgate.net/publication/338506484_Less_Is_More_Learning_Highlight_Detection_From_Video_Duration")
