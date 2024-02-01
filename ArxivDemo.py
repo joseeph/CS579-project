@@ -13,7 +13,10 @@ def Main():
         print(r.title)
     
 
-
+def Main2():
+    author_name = "Yan Yang"
+    papers = arxiv.query(query=f"au:{author_name}", max_results=5)
+    print(papers)
 
 def Main3():
     result = requests.get('http://export.arxiv.org/api/query?search_query=au:"Yan Yang"&start=0&max_results=20')
