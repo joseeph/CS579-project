@@ -3,7 +3,7 @@ from xml.etree import ElementTree as ET
 
 class WeiboUserDataNode(GraphDataNodeBase):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__("WeiboUserDataNode")
         self.UserID = ""
         self.NickName = ""
         self.FollowingIDs = []

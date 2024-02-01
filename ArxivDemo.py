@@ -18,6 +18,17 @@ def Main2():
     print(s)
     pass
 
+def Main3():
+    client = arxiv.Client()
+    search = arxiv.Search(
+        query = 'ti:"Deep Unsupervised Learning using Nonequilibrium Thermodynamics"',
+        max_results = 10,
+        sort_by = arxiv.SortCriterion.SubmittedDate
+        )
+    results = client.results(search)
+    for r in results:
+        print(r.title)
+
 if __name__ == '__main__':
-    Main()
+    Main3()
     

@@ -10,5 +10,9 @@ class ArxivAuthorCrawler(NodeCrawlerBase):
 
     def Parse(self, context: CrawlContext, result):
         # 列出该author下的paper
+        papers = []
         for paper in result:
-            print(paper.title)
+            papers.append(paper.title)
+
+        # 构造数据        
+
