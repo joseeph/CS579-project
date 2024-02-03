@@ -7,10 +7,24 @@ from Framework.NodeCrawlerBase import NodeCrawlerBase
 from ArxivCrawler.ArxivCrawlerUtils import ArxivCrawlerUtils
 
 class ArxivPaperCrawler(NodeCrawlerBase):
-    def __init__(self, paper_name) -> None:
+    def __init__(self) -> None:
         super().__init__()
+        self.CrawlType = ""
+        self.PaperName = ""
+        self.PaperID = ""
+        pass
+    def CrawlByName(self, paper_name):
         self.PaperName = paper_name
+        self.CrawlType = "Name"
         self.SetURL("ti:" + '"' + self.PaperName + '"')
+        self.SetOp("query")
+    
+    def CrawlByID(self, paper_name, paper_id):
+        self.PaperID = paper_id
+        self.PaperName = paper_name
+        self.CrawlType = "ID"
+        self.SetURL(str(self.PaperID))
+        self.SetOp("idlist")
 
     def Parse(self, context: CrawlContext, result):
         # check if the node exist
@@ -27,15 +41,19 @@ class ArxivPaperCrawler(NodeCrawlerBase):
         if len(paper_infolist) == 0:
             print("没有爬到paper:" + self.PaperName)
             # something is wrong, add to black list
-            data_container.AddBlackList(paper_uid)
+            data_container.AddBlackList(paper_uid) 
             return True
         
-        
+        # only get the first paper
         paper_info = paper_infolist[0]
-        paper_authors = paper_info.authors
+        
+        # create paper node
         paper_node = ArxivPaperNode()
         paper_node.SetPaperName(self.PaperName)
+        search_id = ArxivCrawlerUtils.EntryID2SearchID(paper_info.entry_id) 
+        paper_node.SetEntryID(search_id) 
         
+        paper_authors = paper_info.authors
         # add the paper node to the data container
         data_container.AddNode(paper_node)
         for author_info in paper_authors:

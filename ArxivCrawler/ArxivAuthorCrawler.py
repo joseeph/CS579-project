@@ -11,6 +11,7 @@ class ArxivAuthorCrawler(NodeCrawlerBase):
         super().__init__()
         self.AuthorName = author_name
         self.SetURL("au:" + '"' + self.AuthorName + '"')
+        self.SetOp("query")
         
 
     def Parse(self, context: CrawlContext, result):
@@ -43,7 +44,9 @@ class ArxivAuthorCrawler(NodeCrawlerBase):
             paper_exist = data_container.InNodeExistByUID(paper_uid)
             if not paper_exist:
                 from ArxivCrawler.ArxivPaperCrawler import ArxivPaperCrawler
-                crawler = ArxivPaperCrawler(paper_name)
+                crawler = ArxivPaperCrawler()
+                search_id = ArxivCrawlerUtils.EntryID2SearchID(paper_info.entry_id) 
+                crawler.CrawlByID( paper_name, search_id)
                 context.AddDataCrawler(crawler)
             
         return True

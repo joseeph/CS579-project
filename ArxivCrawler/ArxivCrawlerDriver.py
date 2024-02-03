@@ -7,13 +7,20 @@ class ArxivCrawlerDriver(CrawlerDriverBase):
         super().__init__()
         self.Client = arxiv.Client()
 
-    def Get(self, qstr):
-        search = arxiv.Search(
-            query = qstr,
-            max_results = 50,
-            sort_by = arxiv.SortCriterion.SubmittedDate
-        )
-        results = self.Client.results(search)
+    def Get(self, op, qstr):
+        results = None
+        if op == "query":
+            search = arxiv.Search(
+                query = qstr,
+                max_results = 50,
+                sort_by = arxiv.SortCriterion.SubmittedDate
+            )
+            results = self.Client.results(search)
+        elif op == "idlist":
+            search = arxiv.Search(
+                id_list=[qstr],
+            )
+            results = self.Client.results(search)
         return results
     
         
