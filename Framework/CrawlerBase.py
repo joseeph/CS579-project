@@ -4,8 +4,11 @@ from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
 class CrawlerBase:
     def __init__(self) -> None:
         self.URL = ""
+        self.OP = ""
         pass
 
+    def SetOp(self, op):
+        self.OP = op
     def SetURL(self, url):
         self.URL = url
 
@@ -17,7 +20,7 @@ class CrawlerBase:
 
     def Crawl(self, context :'CrawlContext', crawler_driver :CrawlerDriverBase):
         # 网络端获取url的网页数据
-        s = crawler_driver.Get(self.URL)
+        s = crawler_driver.Get(self.OP, self.URL)
         if s == b'':
             return False
         # 交给派生类解析

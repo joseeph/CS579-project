@@ -7,6 +7,10 @@ class ArxivPaperNode(GraphDataNodeBase):
         super().__init__("ArxivPaperNode")
         self.PaperName = ""
         self.AuthorList = []
+        self.EntryID = ""
+
+    def SetEntryID(self, entry_id):
+        self.EntryID = entry_id
     
     def SetPaperName(self, paper_name):
         self.PaperName = paper_name
@@ -25,6 +29,10 @@ class ArxivPaperNode(GraphDataNodeBase):
         name_node.set("value", self.PaperName)
         paper_node.append(name_node)
 
+        entryid_ele = ET.Element("EntryID")
+        entryid_ele.set("value", self.EntryID)
+        paper_node.append(entryid_ele)
+
         authorlist_node =ET.Element("AuthorList")
         paper_node.append(authorlist_node)
         for author_name in self.AuthorList:
@@ -41,6 +49,8 @@ class ArxivPaperNode(GraphDataNodeBase):
         for child_node in node:
             if child_node.tag == "PaperName":
                 self.PaperName = child_node.get("value")
+            elif child_node.tag == "EntryID":
+                self.EntryID = child_node.get("value")
             elif child_node.tag == "AuthorList":
                 self.UnserializeAuthorList(child_node)
 

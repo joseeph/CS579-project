@@ -56,12 +56,19 @@ def Main():
 
     recommend_paper = RecommendCrawlPaperName(crawler_runner.NodeContainer)
     recommand_author = RecommandCrawlPaperAuthorName(crawler_runner.NodeContainer)
-    crawler = ArxivPaperCrawler(recommend_paper)
+    crawler = ArxivPaperCrawler()
+    crawler.CrawlByName(recommend_paper)
     crawler_runner.AddDataNodeCrawler(crawler)
     crawler = ArxivAuthorCrawler(recommand_author)
     crawler_runner.AddDataNodeCrawler(crawler)
     crawler_runner.BeginCrawl()
     pass
+
+def Main2():
+    data_container = NodeContainer()
+    save_path = "./result.xml"
+    node_factory = ArxivNodeFactory()
+    data_container.Load(save_path, node_factory)
 
 if __name__ == "__main__":
     Main()

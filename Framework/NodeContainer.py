@@ -45,6 +45,8 @@ class NodeContainer:
         
     def FindNodeWithType(self, data_type, node_uid):
         node_list = self.NodeMap.get(data_type)
+        if node_list == None:
+            return None
         node :GraphDataNodeBase 
         for node in node_list:
             cur_uid = node.GetUniqueString()

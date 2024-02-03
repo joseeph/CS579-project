@@ -3,5 +3,5 @@ class CrawlerDriverBase:
         pass
 
 
-    def Get(self, url):
+    def Get(self, op, url):
         pass
