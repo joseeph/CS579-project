@@ -1,5 +1,6 @@
 from Framework.GraphDataNodeBase import GraphDataNodeBase
 from xml.etree import ElementTree as ET
+from ArxivCrawler.ArxivCrawlerUtils import ArxivCrawlerUtils
 
 class ArxivPaperNode(GraphDataNodeBase):
     def __init__(self) -> None:
@@ -14,11 +15,10 @@ class ArxivPaperNode(GraphDataNodeBase):
         self.AuthorList.append(author_name)
 
     def GetUniqueString(self):
-        return "Paper:" + self.PaperName
-    
+        return ArxivCrawlerUtils.GetPaperUID(self.PaperName)
 
     def Serialize(self, parent_node :ET.Element):
-        paper_node = ET.Element("PaperNode")
+        paper_node = ET.Element("ArxivPaperNode")
         parent_node.append(paper_node)
 
         name_node= ET.Element("PaperName")
@@ -29,7 +29,7 @@ class ArxivPaperNode(GraphDataNodeBase):
         paper_node.append(authorlist_node)
         for author_name in self.AuthorList:
             author_node = ET.Element("Author")
-            author_node.set("value", author_name)
+            author_node.set("Name", author_name)
             authorlist_node.append(author_node)
 
 
@@ -47,5 +47,5 @@ class ArxivPaperNode(GraphDataNodeBase):
     def UnserializeAuthorList(self, authorlist_node :ET.Element):
         for child_node in authorlist_node:
             if child_node.tag == "Author":
-                author = child_node.name
+                author = child_node.get("Name")
                 self.AuthorList.append(author)

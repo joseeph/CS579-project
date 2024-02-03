@@ -1,6 +1,10 @@
-from Framework.CrawlContext import CrawlContext
-from Framework.NodeCrawlerBase import NodeCrawlerBase
 
+from ArxivCrawler.ArxivAuthorNode import ArxivAuthorNode
+from ArxivCrawler.ArxivPaperNode import ArxivPaperNode
+from Framework.CrawlContext import CrawlContext
+from Framework.NodeContainer import NodeContainer
+from Framework.NodeCrawlerBase import NodeCrawlerBase
+from ArxivCrawler.ArxivCrawlerUtils import ArxivCrawlerUtils
 
 class ArxivPaperCrawler(NodeCrawlerBase):
     def __init__(self, paper_name) -> None:
@@ -9,7 +13,39 @@ class ArxivPaperCrawler(NodeCrawlerBase):
         self.SetURL("ti:" + '"' + self.PaperName + '"')
 
     def Parse(self, context: CrawlContext, result):
-        if len(result) == 0:
+        # check if the node exist
+        data_container :NodeContainer = context.DataContainer
+        paper_uid = ArxivCrawlerUtils.GetPaperUID(self.PaperName)
+        is_exist = data_container.InNodeExistByUID(paper_uid)
+        if is_exist:
             return True
-        paper_info = result[0]
+        
+        paper_infolist = []
+        for paper_info in result:
+            paper_infolist.append(paper_info)
+
+        if len(paper_infolist) == 0:
+            print("没有爬到paper:" + self.PaperName)
+            # something is wrong, add to black list
+            data_container.AddBlackList(paper_uid)
+            return True
+        
+        
+        paper_info = paper_infolist[0]
         paper_authors = paper_info.authors
+        paper_node = ArxivPaperNode()
+        paper_node.SetPaperName(self.PaperName)
+        
+        # add the paper node to the data container
+        data_container.AddNode(paper_node)
+        for author_info in paper_authors:
+            author_name = author_info.name
+            paper_node.AddAuthor(author_name)
+            # if the author doesn't in the data container, create a crawler
+            author_uid = ArxivCrawlerUtils.GetAuthorUID(author_name)
+            author_exist = data_container.InNodeExistByUID(author_uid)
+            if not author_exist:
+                from ArxivCrawler.ArxivAuthorCrawler import ArxivAuthorCrawler
+                author_crawler = ArxivAuthorCrawler(author_name)
+                context.AddDataCrawler(author_crawler)
+        return True

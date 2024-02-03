@@ -35,7 +35,7 @@ class CrawlerRunner:
     def SetSleepTime(self, sleep_time):
         self.SleepTime = sleep_time
 
-    def AddDataCrawler(self, Crawler :CrawlerBase):
+    def AddDataNodeCrawler(self, Crawler :CrawlerBase):
         '''
         添加下一个爬虫
         '''

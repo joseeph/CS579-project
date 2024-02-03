@@ -4,53 +4,77 @@ from xml.etree import ElementTree as ET
 from Framework.NodeFactoryBase import NodeFactoryBase
 class NodeContainer:
     def __init__(self) -> None:        
-        self.NodeList = []
+        self.NodeMap = {}
+        self.BlackList = []
         pass
+
     
     def GetNodeCount(self):
         '''
         get all the node number
         '''
-        node_count = len(self.NodeList)
-        return node_count
+        node_num = 0
+        keys = self.NodeMap.keys()
+        for data_type in keys:
+            node_list = self.NodeMap[data_type]
+            node_num += len(node_list)
 
-    def IsNodeExist(self, node :GraphDataNodeBase):
-        for cur_node in self.NodeList:
-            cur_uname = cur_node.GetUniqueString() 
-            if node.GetUniqueString() == cur_uname:
-                return True
-        return False
+        return node_num
     
-    def InNodeExistByUStr(self, node_ustr):
-        idx = self.FindNodeIndex(node_ustr)
-        return idx >= 0
+    def InNodeExistByUID(self, node_uid):
+        node = self.FindNode(node_uid)
+        return node != None
+
+    def GetDataTypes(self):
+        return self.NodeMap.keys()
     
-    def FindNodeIndex(self, node_ustr):
-        for cur_idx in range(len(self.NodeList)):
-            cur_node = self.NodeList[cur_idx]
-            cur_uname = cur_node.GetUniqueString() 
-            if node_ustr == cur_uname:
-                return cur_idx            
-        return -1
+    def GetDataNodeListByType(self, data_type):
+        node_list = self.NodeMap.get(data_type)
+        return node_list
     
-    def FindNode(self, node_ustr):
+    def FindNode(self, node_uid):
         '''
         search the node by unique string
         '''
-        idx = self.FindNodeIndex(node_ustr)
-        if idx >= 0:
-            return self.NodeList[idx]
-        else:
-            return None
+        keys = self.NodeMap.keys()
+        for data_type in keys:
+            found_node = self.FindNodeWithType(data_type, node_uid)
+            if found_node != None:
+                return found_node
+        return None
+        
+    def FindNodeWithType(self, data_type, node_uid):
+        node_list = self.NodeMap.get(data_type)
+        node :GraphDataNodeBase 
+        for node in node_list:
+            cur_uid = node.GetUniqueString()
+            if cur_uid == node_uid:
+                return node 
+        return None
 
     def AddNode(self, node :GraphDataNodeBase):
-        idx = self.FindNodeIndex(node.GetUniqueString())
-        if idx >= 0:
-            self.NodeList.pop(idx)
-        self.NodeList.append(node)
-        print("添加数据节点：" + node.GetUniqueString() + " 现在数量为：" + str(len(self.NodeList)))
+        
+        found_node = self.FindNode(node.GetUniqueString())
+        if found_node != None:
+            raise Exception("添加节点重复")
+        
+        node_list = self.NodeMap.get(node.GetDataType())
+        if node_list == None:
+            self.NodeMap[node.GetDataType()] = []
+            node_list = self.NodeMap[node.GetDataType()]
+        node_list.append(node)
 
-        pass 
+        node_count = self.GetNodeCount()
+        print("添加数据节点：" + node.GetUniqueString() + " 现在数量为：" + str(node_count))
+
+    def AddBlackList(self, uid):
+        if uid not in self.BlackList:
+            self.BlackList.append(uid)
+        
+
+    def IsInBlackList(self, uid):
+        return uid in self.BlackList
+        
 
     def Save(self, filepath):
         '''
@@ -77,22 +101,55 @@ class NodeContainer:
         root = tree.getroot() # 获取root tag        
         
         self.Unserialize(root, node_factory)
-        pass
+        
 
     def Serialize(self, xml_node :ET.Element):
         nodelist_ele = ET.Element("NodeList")
         xml_node.append(nodelist_ele)
 
-        data_node :GraphDataNodeBase
-        for data_node in self.NodeList:
-            data_node.Serialize(nodelist_ele)
+        keys = self.NodeMap.keys()
+        if keys == None:
+            return
+        for key in keys:
+            # data type element
+            datatype_ele = ET.Element("DataType")
+            datatype_ele.set("value", key)
+            nodelist_ele.append(datatype_ele)
 
-    def Unserialize(self, root_node :ET.Element, node_factory :NodeFactoryBase):
-        # NodeList
-        list_node = root_node[0]
-        for child_node in list_node:
-            data_node = node_factory.CreateNode( child_node.tag)
-            data_node.Unserialize(child_node)
-            self.NodeList.append(data_node)
+            node_list = self.NodeMap[key]
+            node :GraphDataNodeBase
+            for node in node_list:
+                node.Serialize(datatype_ele)
 
-        pass
+        blacklist_ele = ET.Element("BlackList")
+        xml_node.append(blacklist_ele)
+        for black_uid in self.BlackList:
+            black_ele = ET.Element("BlackUID")
+            black_ele.set("value", black_uid)
+            blacklist_ele.append(black_ele)
+
+
+    def Unserialize(self, root_ele :ET.Element, node_factory :NodeFactoryBase):
+        # root_ele: DataNodes
+
+        self.NodeMap = {}
+        self.BlackList = []
+
+        for ele in root_ele:
+            if ele.tag == "NodeList":
+                list_ele = ele
+                for datatype_ele in list_ele:
+                    datatype = datatype_ele.get("value")
+                    self.NodeMap[datatype] = []
+                    node_list = self.NodeMap[datatype]
+                    for data_ele in datatype_ele:
+                        data_node = node_factory.CreateNode( data_ele.tag)
+                        data_node.Unserialize(data_ele)
+                        node_list.append(data_node)
+            elif ele.tag == "BlackList":
+                blacklist_ele = ele
+                for black_ele in blacklist_ele:
+                    black_uid = black_ele.get("value")
+                    self.BlackList.append(black_uid)
+        
+        

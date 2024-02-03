@@ -10,7 +10,7 @@ class ArxivCrawlerDriver(CrawlerDriverBase):
     def Get(self, qstr):
         search = arxiv.Search(
             query = qstr,
-            max_results = 10,
+            max_results = 50,
             sort_by = arxiv.SortCriterion.SubmittedDate
         )
         results = self.Client.results(search)

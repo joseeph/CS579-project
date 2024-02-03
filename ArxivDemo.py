@@ -18,10 +18,10 @@ def Main2():
     print(s)
     pass
 
-def Main3():
+def Main3(title):
     client = arxiv.Client()
     search = arxiv.Search(
-        query = 'ti:"Deep Unsupervised Learning using Nonequilibrium Thermodynamics"',
+        query = 'ti:"' + title + '"',
         max_results = 10,
         sort_by = arxiv.SortCriterion.SubmittedDate
         )
@@ -29,6 +29,20 @@ def Main3():
     for r in results:
         print(r.title)
 
+def Main4():
+    
+    client = arxiv.Client()
+    search = arxiv.Search(
+        query = 'au:"Yan Yang"',
+        max_results = 10,
+        sort_by = arxiv.SortCriterion.SubmittedDate
+        )
+    results = client.results(search)
+    for r in results:
+        print(r)
+
 if __name__ == '__main__':
-    Main3()
+    title = "Variance-Reduced Gradient Estimation via Noise-Reuse in Online Evolution Strategie"
+    #title = "Deep Unsupervised Learning using Nonequilibrium Thermodynamics"
+    Main3(title)
     

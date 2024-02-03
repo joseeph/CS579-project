@@ -14,11 +14,11 @@ def FindRecommandCrawlUserID(data_container :NodeContainer, config):
     user_id_list = config['user_id_list']
     user_id = user_id_list[0]
 
-    if len(data_container.NodeList) > 0:
+    if len(data_container.NodeMap) > 0:
         user_node :WeiboUserDataNode
-        for user_node in data_container.NodeList:            
+        for user_node in data_container.NodeMap:            
             for following_id in user_node.FollowingIDs:
-                if not data_container.InNodeExistByUStr(following_id):
+                if not data_container.InNodeExistByUID(following_id):
                     return following_id            
     return user_id
 
@@ -41,7 +41,7 @@ def Main(config_path):
     user_id = FindRecommandCrawlUserID(Runner.NodeContainer, config)
 
     first_crawler = WeiboFollowingPageNumberCrawler(user_id)
-    Runner.AddDataCrawler(first_crawler)
+    Runner.AddDataNodeCrawler(first_crawler)
     Runner.BeginCrawl()
     
     
