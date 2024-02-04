@@ -50,7 +50,7 @@ def Main():
 
     save_path = "./result.xml"
     crawler_runner = CrawlerRunner(crawl_driver, save_path)
-    crawler_runner.SetMaxNode(2000)
+    crawler_runner.SetMaxNode(5000)
     crawler_runner.SetSleepTime(3)
     crawler_runner.LoadNodes(node_factory)
 
