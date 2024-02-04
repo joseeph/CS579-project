@@ -17,14 +17,14 @@ class ArxivPaperCrawler(NodeCrawlerBase):
         self.PaperName = paper_name
         self.CrawlType = "Name"
         self.SetURL("ti:" + '"' + self.PaperName + '"')
-        self.SetOp("query")
+        self.SetOp("query_papername")
     
     def CrawlByID(self, paper_name, paper_id):
         self.PaperID = paper_id
         self.PaperName = paper_name
         self.CrawlType = "ID"
         self.SetURL(str(self.PaperID))
-        self.SetOp("idlist")
+        self.SetOp("query_idlist")
 
     def Parse(self, context: CrawlContext, result):
         # check if the node exist
