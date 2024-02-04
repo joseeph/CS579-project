@@ -11,7 +11,7 @@ class ArxivAuthorCrawler(NodeCrawlerBase):
         super().__init__()
         self.AuthorName = author_name
         self.SetURL("au:" + '"' + self.AuthorName + '"')
-        self.SetOp("query")
+        self.SetOp("query_author")
         
 
     def Parse(self, context: CrawlContext, result):
