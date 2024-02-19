@@ -20,7 +20,7 @@ class ArxivCrawlerDriver(CrawlerDriverBase):
         elif op == "query_author":
             search = arxiv.Search(
                 query = qstr,
-                max_results = 5,
+                max_results = 50,
                 sort_by = arxiv.SortCriterion.SubmittedDate
             )
             results = self.Client.results(search)
