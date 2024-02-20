@@ -1,11 +1,11 @@
 from ArxivCrawler.ArxivAuthorRelationship import ArxivAuthorRelationship
 from xml.etree import ElementTree as ET
 
-class ArxivAuthorRelationshipFile:
+class ArxivAuthorRelationshipCollection:
     def __init__(self) -> None:
         self.RelationshipList = []
 
-    def AddRelationshipo(self, relationship :ArxivAuthorRelationship):
+    def AddRelationship(self, relationship :ArxivAuthorRelationship):
         self.RelationshipList.append(relationship)
         
 
@@ -19,6 +19,7 @@ class ArxivAuthorRelationshipFile:
         for child_node in node:
             relationship = ArxivAuthorRelationship()
             relationship.Unserialize(child_node)
+            self.RelationshipList.append(relationship)
         
     def Save(self, filepath):
         '''
