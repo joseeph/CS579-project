@@ -39,7 +39,7 @@ class ArxivPaperCrawler(NodeCrawlerBase):
             paper_infolist.append(paper_info)
 
         if len(paper_infolist) == 0:
-            print("没有爬到paper:" + self.PaperName)
+            print("paper not found:" + self.PaperName)
             # something is wrong, add to black list
             data_container.AddBlackList(paper_uid) 
             return True

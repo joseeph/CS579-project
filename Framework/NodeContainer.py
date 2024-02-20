@@ -58,7 +58,7 @@ class NodeContainer:
         
         found_node = self.FindNode(node.GetUniqueString())
         if found_node != None:
-            raise Exception("添加节点重复")
+            raise Exception("Duplicated data")
         
         node_list = self.NodeMap.get(node.GetDataType())
         if node_list == None:
@@ -67,7 +67,7 @@ class NodeContainer:
         node_list.append(node)
 
         node_count = self.GetNodeCount()
-        print("添加数据节点：" + node.GetUniqueString() + " 现在数量为：" + str(node_count))
+        print("Add data node：" + node.GetUniqueString() + " Number：" + str(node_count))
 
     def AddBlackList(self, uid):
         if uid not in self.BlackList:

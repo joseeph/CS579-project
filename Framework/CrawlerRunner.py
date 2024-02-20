@@ -86,5 +86,5 @@ class CrawlerRunner:
                return
             else:
                 # sleep for a long time because of blocking
-                print("爬虫被临时封禁，等待" + str(self.SleepTimeWhenBlocked) + "秒")
+                print("The crawler is blocked，waits for " + str(self.SleepTimeWhenBlocked) + " seconds")
                 sleep(self.SleepTimeWhenBlocked)

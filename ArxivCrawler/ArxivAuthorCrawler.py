@@ -26,7 +26,7 @@ class ArxivAuthorCrawler(NodeCrawlerBase):
         for paper_info in result:
             paper_infos.append(paper_info)
         if len(paper_infos) == 0:
-            print("没有爬到该作者的文章:" + self.AuthorName)
+            print("The papers are not found for the author:" + self.AuthorName)
             # something is wrong add to blacklist
             data_container.AddBlackList(author_id)
             return True
