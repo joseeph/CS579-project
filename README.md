@@ -1,7 +1,10 @@
 # CS579-project
-IIT CS597 "Social Network Analysis" Class project
 
-We tried the ResearchGate and Weibo, but the terms don't allow us to crawl these websites, so we turn to Arxiv.
+IIT CS579 "Online Social Network Analysis" Class project 1
 
-To run the arxiv crawler, go to CrawlArxiv.py, and run it.  
+* Step 1. Run CrawlArxiv.py, it begins to crawl the Arxiv. It generates result.xml.
+* Step 2. Run CleanData.py, it transforms the data format. It generates cleaned_result.xml
+* Step 3. Arxiv_author_graph_drawer.ipynb reads cleaned_result.xml, and plots the graph.
+
+
 
