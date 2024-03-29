@@ -8,3 +8,6 @@ IIT CS579 "Online Social Network Analysis" Class project 1
 
 
 
+IIT CS579 "Online Social Network Analysis" Class Project 2
+
+Data Source: https://www.kaggle.com/datasets/mathurinache/citation-network-dataset/data
