@@ -2,3 +2,5 @@
 *.xml
 _pycache_
 *.json
+*.dat
+*.zip
