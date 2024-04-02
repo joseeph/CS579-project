@@ -25,7 +25,7 @@ class CitationPaperNode(GraphDataNodeBase):
         self.Year = int(year)
 
     def AddAuthor(self, author_id):
-        self.AuthorIDs.append(author_id)
+        self.AuthorIDs.append(int(author_id))
 
     def AddReference(self, ref_id):
         self.RefIDs.append(int(ref_id))

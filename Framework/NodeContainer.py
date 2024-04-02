@@ -28,7 +28,7 @@ class NodeContainer:
     def GetDataTypes(self):
         return self.NodeMapByType.keys()
     
-    def GetDataNodeListByType(self, data_type):
+    def GetAllNodesByType(self, data_type):
         node_list = self.NodeMapByType.get(data_type)
         return node_list
     

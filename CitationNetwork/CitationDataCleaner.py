@@ -23,6 +23,7 @@ class CitationDataCleaner:
 
             id = 0
             authors = []
+            refs = []
             title = ""
             year = 0
             n_citation = 0
@@ -44,7 +45,8 @@ class CitationDataCleaner:
                     doc_type = v
                 elif k == 'doi':
                     doi = v
-
+                elif k == 'references':
+                    refs = v
             
             paper_node = CitationPaperNode()
             paper_node.SetID(id)
@@ -53,7 +55,9 @@ class CitationDataCleaner:
             paper_node.SetDocType(doc_type)
             paper_node.SetYear(year)
             paper_node.SetCitationNum(n_citation)
-            
+            # walk all references
+            for cur_ref in refs:
+                paper_node.AddReference(cur_ref)
             # walk all authors
             for cur_author in authors:
                 author_name = ""
@@ -82,6 +86,6 @@ class CitationDataCleaner:
             process_num += 1
             if (process_num % save_frequency) == 0:
                 CitationUtils.PickleWrite(node_container, dst_path)
-        # 最后保存
+        # save the result
         CitationUtils.PickleWrite(node_container, dst_path)
             
