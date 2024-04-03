@@ -15,6 +15,12 @@ def Main():
     cleaner.CleanData(src_path, dst_path)
 
 def Main2():
+    cleaner = CitationDataCleaner()
+    src_path = "./Data/CitationClean.dat"
+    dst_path = "./Data/CitationClean2.dat"
+    cleaner.CleanStep2(src_path, dst_path)
+
+def MainTest():
     dst_path = "./Data/CitationClean.dat"
     data_container :NodeContainer = CitationUtils.PickleRead(dst_path)
 
@@ -33,8 +39,6 @@ def Main2():
             if author_node != None:
                 print(author_node.AuthorName)
     
-
-    pass
 
 if __name__ == "__main__":
     Main2()

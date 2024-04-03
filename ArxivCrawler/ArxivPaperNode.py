@@ -18,7 +18,7 @@ class ArxivPaperNode(GraphDataNodeBase):
     def AddAuthor(self, author_name):
         self.AuthorList.append(author_name)
 
-    def GetUniqueString(self):
+    def GetUID(self):
         return ArxivCrawlerUtils.GetPaperUID(self.PaperName)
 
     def Serialize(self, parent_node :ET.Element):

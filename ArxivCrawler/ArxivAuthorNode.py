@@ -8,7 +8,7 @@ class ArxivAuthorNode(GraphDataNodeBase):
         self.Author = ""
         self.PaperNameList = []
     
-    def GetUniqueString(self):
+    def GetUID(self):
         return ArxivCrawlerUtils.GetAuthorUID(self.Author)
     
     def SetAuthor(self, author):

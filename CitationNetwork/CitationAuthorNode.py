@@ -19,7 +19,7 @@ class CitationAuthorNode(GraphDataNodeBase):
     def SetOrganization(self, org):
         self.Organization = org
 
-    def GetUniqueString(self):
+    def GetUID(self):
         return CitationUtils.BuildCitationAuthorNodeUID(self.ID)
 
     def Serialize(self, parent_node :ET.Element):

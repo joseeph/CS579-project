@@ -53,7 +53,7 @@ class NodeContainer:
 
     def AddNode(self, node :GraphDataNodeBase):
         
-        found_node = self.FindNode(node.GetUniqueString())
+        found_node = self.FindNode(node.GetUID())
         if found_node != None:
             raise Exception("Duplicated data")
         
@@ -61,10 +61,10 @@ class NodeContainer:
         if node_map == None:
             self.NodeMapByType[node.GetDataType()] = {}
             node_map = self.NodeMapByType[node.GetDataType()]
-        node_map[node.GetUniqueString()] = node
+        node_map[node.GetUID()] = node
 
         node_count = self.GetNodeCount()
-        print("Add data node：" + node.GetUniqueString() + " Number：" + str(node_count))
+        print("Add data node：" + node.GetUID() + " Number：" + str(node_count))
 
     def AddBlackList(self, uid):
         if uid not in self.BlackList:

@@ -7,7 +7,7 @@ class GraphDataNodeBase:
     def GetDataType(self):
         return self.DataType
 
-    def GetUniqueString(self):
+    def GetUID(self):
         raise NotImplementedError
     
 
