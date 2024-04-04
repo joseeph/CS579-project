@@ -15,13 +15,10 @@ class CitationPaperNode(GraphDataNodeBase):
         self.DocType = ""
         self.CitationNum = 0
         self.FOS = []
+        self.FOSWeight = []
 
-    def IsInFOS(self, fos_name):
-        fos_names = []
-        for fos_obj in self.FOS:
-            fos_names.append(fos_obj[0]) 
-
-        in_fos = fos_name in fos_names
+    def IsInFOS(self, fos_name):        
+        in_fos = fos_name in self.FOS
         return in_fos
         
     def SetID(self, id):
@@ -52,8 +49,9 @@ class CitationPaperNode(GraphDataNodeBase):
         return CitationUtils.BuildCitationPaperUID(self.ID)
     
     def AddFOS(self, name, w):
-        fos_info = (name, w)
-        self.FOS.append(fos_info)
+        #fos_info = (name, w)
+        self.FOS.append(name)
+        self.FOSWeight.append(w)
 
     def Serialize(self, parent_node):
         paper_node = ET.Element("CitationPaperNode")

@@ -41,6 +41,7 @@ def MainTest():
     
 
 if __name__ == "__main__":
+    Main()
     Main2()
 
     
