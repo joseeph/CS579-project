@@ -1,5 +1,5 @@
 from Framework.GraphDataNodeBase import GraphDataNodeBase
-import CitationNetwork.CitationUtils as CitationUtils
+import StanfordCitationNetwork.CitationUtils as CitationUtils
 from xml.etree import ElementTree as ET
 
 

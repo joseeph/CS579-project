@@ -9,26 +9,30 @@ class ArxivCrawlerDriver(CrawlerDriverBase):
         self.MaxResult = 50
 
     def Get(self, op, qstr):
-        results = None
+        
         if op == "query_papername":
             search = arxiv.Search(
                 query = qstr,
-                max_results = 50,
+                max_results = self.MaxResult,
                 sort_by = arxiv.SortCriterion.SubmittedDate
             )
-            results = self.Client.results(search)
         elif op == "query_author":
             search = arxiv.Search(
                 query = qstr,
-                max_results = 50,
+                max_results = self.MaxResult,
                 sort_by = arxiv.SortCriterion.SubmittedDate
             )
-            results = self.Client.results(search)
         elif op == "query_idlist":
             search = arxiv.Search(
                 id_list=[qstr],
             )
-            results = self.Client.results(search)
+        results = None
+        try:
+            if search != None: 
+                results = self.Client.results(search)
+        except Exception as e:
+            print(e)
+            
         return results
     
         

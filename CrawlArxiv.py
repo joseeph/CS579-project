@@ -10,6 +10,7 @@ from Framework.CrawlerRunner import CrawlerRunner
 from Framework.NodeContainer import NodeContainer
 from ArxivCrawler.ArxivCrawlerUtils import ArxivCrawlerUtils
 def RecommandCrawlPaperAuthorName(data_container :NodeContainer):
+    '''
     node_list = data_container.GetDataNodeListByType("ArxivPaperNode")
     node :ArxivPaperNode
     if node_list == None:
@@ -25,10 +26,12 @@ def RecommandCrawlPaperAuthorName(data_container :NodeContainer):
             found_node = data_container.FindNodeWithType("ArxivAuthorNode", author_id)
             if found_node == None:
                 return author_name
+    '''
     return "Yan Yang"
 
 def RecommendCrawlPaperName(data_container :NodeContainer):
-    node_list = data_container.GetDataNodeListByType("ArxivAuthorNode")
+    '''
+    node_list = data_container.GetAllNodesByType("ArxivAuthorNode")
     if node_list == None:
         return "Deep Unsupervised Learning using Nonequilibrium Thermodynamics"
     node :ArxivAuthorNode
@@ -42,16 +45,18 @@ def RecommendCrawlPaperName(data_container :NodeContainer):
             found_node = data_container.FindNodeWithType("ArxivPaperNode", paper_id)
             if found_node == None:
                 return paper_name
+    '''
     return "Deep Unsupervised Learning using Nonequilibrium Thermodynamics"
 
 def Main():
     crawl_driver = ArxivCrawlerDriver()
+    node_factory = ArxivNodeFactory()
 
     save_path = "./result.xml"
     crawler_runner = CrawlerRunner(crawl_driver, save_path)
     crawler_runner.SetMaxNode(5000)
     crawler_runner.SetSleepTime(3)
-    crawler_runner.LoadNodes()
+    crawler_runner.LoadNodes(node_factory)
 
     recommend_paper = RecommendCrawlPaperName(crawler_runner.DataContainer)
     recommand_author = RecommandCrawlPaperAuthorName(crawler_runner.DataContainer)

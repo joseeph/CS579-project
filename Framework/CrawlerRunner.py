@@ -1,4 +1,5 @@
 from CrawlerDrivers.CrawlerDriverBase import CrawlerDriverBase
+from Framework import UtilFuncs
 from Framework.CrawlContext import CrawlContext
 from Framework.NodeContainer import NodeContainer
 from Framework.CrawlerBase import CrawlerBase
@@ -8,26 +9,33 @@ import os.path
 
 from Framework.NodeFactoryBase import NodeFactoryBase
 class CrawlerRunner:
-    def __init__(self, CrawlerDriver : CrawlerDriverBase, save_path) -> None:
+    def __init__(self, CrawlerDriver : CrawlerDriverBase, save_path, data_container = None) -> None:
         # 最大节点数
         self.MaxNode = 500        
         self.SleepTime = 1
         self.SleepTimeWhenBlocked = 60 * 5
         # 爬虫队列
         self.Crawlers = CrawlerQueue()
-        self.NodeContainer = NodeContainer()
+        if data_container == None:
+            self.DataContainer = NodeContainer()
+        else:
+            self.DataContainer = data_container
         self.Context = CrawlContext()
-        self.Context.Init(self.NodeContainer, CrawlerDriver, self.Crawlers)
+        self.Context.Init(self.DataContainer, CrawlerDriver, self.Crawlers)
         self.CrawlerDriver = CrawlerDriver
         self.SavePath = save_path
+        self.SaveOnFinish = False
 
+    def SetSaveOnFinish(self, is_save):
+        self.SaveOnFinish = is_save
 
-    def LoadNodes(self, node_factory :NodeFactoryBase):
+    def LoadNodes(self):
         '''
         load the nodes from file
         '''
         if os.path.exists(self.SavePath):
-            self.NodeContainer.Load(self.SavePath, node_factory)
+            self.DataContainer = UtilFuncs.PickleRead(self.SavePath)
+        
 
     def SetMaxNode(self, max_node):
         self.MaxNode = max_node
@@ -37,7 +45,7 @@ class CrawlerRunner:
 
     def AddDataNodeCrawler(self, Crawler :CrawlerBase):
         '''
-        添加下一个爬虫
+        add next crawler
         '''
         self.Crawlers.AddNodeCrawler(Crawler)
     
@@ -56,7 +64,7 @@ class CrawlerRunner:
     
 
     def BeginCrawl(self):
-        while self.NodeContainer.GetNodeCount() < self.MaxNode:
+        while self.MaxNode < 0 or self.DataContainer.GetNodeCount() < self.MaxNode:
             # crawl next data crawler to create a new data node
             
             # get next data crawler
@@ -75,8 +83,10 @@ class CrawlerRunner:
                 self.DoCrawl(cur_infocrawler, self.Context, self.CrawlerDriver)                
                 sleep(self.SleepTime)
 
-            # save
-            self.NodeContainer.Save(self.SavePath)
+        # save
+        if self.SaveOnFinish:
+            UtilFuncs.PickleWrite(self.DataContainer, self.SavePath)
+            
             
     def DoCrawl(self, crawler :CrawlerBase, context, driver):
         while True:

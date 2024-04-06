@@ -1,9 +1,13 @@
+from ArxivCrawler.ArxivCrawlerDriver import ArxivCrawlerDriver
 from CitationNetwork.CitationAuthorNode import CitationAuthorNode
 from CitationNetwork.CitationDataCleaner import CitationDataCleaner
 from CitationNetwork.CitationPaperNode import CitationPaperNode
-import CitationNetwork.CitationUtils as CitationUtils
+import StanfordCitationNetwork.CitationUtils as CitationUtils
 from Framework.NodeContainer import NodeContainer
 import pickle
+
+from StanfordCitationNetwork.DataCleaner import DataCleaner
+'''
 def Test():
     json_str = '{root:[{"id":1}, {"id":2}]}'
     pass
@@ -39,10 +43,31 @@ def MainTest():
             if author_node != None:
                 print(author_node.AuthorName)
     
+'''
+
+def CleanMain():
+    cleaner = DataCleaner()
+    citationfile_path = "./Data/cit-HepTh.txt"
+    datefile_path = "./Data/cit-HepTh-dates.txt"
+    abstract_parentdir = "./Data/cit-HepTh-abstracts"
+    output_path = "./Data/CitationCleaned.dat"
+    cleaner.SetCitationPath(citationfile_path)
+    cleaner.SetDatePath(datefile_path)
+    cleaner.SetAbstractParentDir(abstract_parentdir)
+    cleaner.DoClean(output_path)
+
+def CrawlerMain():
+    driver = ArxivCrawlerDriver()
+    #result = driver.Get("query_idlist", "hep-ph/119902209")
+    result = driver.Get("query_idlist", "hep-th/9203001")
+    
+    paper_infolist = []
+    for paper_info in result:
+        paper_infolist.append(paper_info)
+    return paper_infolist
 
 if __name__ == "__main__":
-    Main()
-    Main2()
-
+    CleanMain()
+    
     
     pass

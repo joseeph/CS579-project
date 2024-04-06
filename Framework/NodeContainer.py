@@ -1,7 +1,8 @@
 from Framework.GraphDataNodeBase import GraphDataNodeBase
 from xml.etree import ElementTree as ET
-
 from Framework.NodeFactoryBase import NodeFactoryBase
+import random
+
 class NodeContainer:
     def __init__(self) -> None:        
         self.NodeMapByType = {}
@@ -66,14 +67,39 @@ class NodeContainer:
         node_count = self.GetNodeCount()
         print("Add data node：" + node.GetUID() + " Number：" + str(node_count))
 
+    def RemoveNode(self, node_uid :str):
+        for node_typename in self.NodeMapByType:
+            node_map = self.NodeMapByType[node_typename]
+            node_dat = node_map.get(node_uid)
+            if node_dat != None:
+                del node_map[node_uid]
+                break
+
+
     def AddBlackList(self, uid):
         if uid not in self.BlackList:
             self.BlackList.append(uid)
+    
+    def RandomReplaceNode(self, node :GraphDataNodeBase):
+        '''
+        randomly replace a node
+        '''
+        data_type = node.GetDataType()
+        node_map = self.NodeMapByType.get(data_type)
+        if node_map == None:
+            # the data type doesn't exist
+            return
+        exist_node = node_map.get(node.GetUID())
+        if exist_node == None:
+            # this node already exist in this container
+            return
+        sel_key = random.choice(list(node_map.keys()))
+        del node_map[sel_key]
+        node_map[node.GetUID()] = node
         
 
     def IsInBlackList(self, uid):
         return uid in self.BlackList
-        
 
     def Save(self, filepath):
         '''
@@ -145,7 +171,7 @@ class NodeContainer:
                     for data_ele in datatype_ele:
                         data_node = node_factory.CreateNode( data_ele.tag)
                         data_node.Unserialize(data_ele)
-                        node_map[data_node.GetUniqueString()] = data_node
+                        node_map[data_node.GetUID()] = data_node
                         
             elif ele.tag == "BlackList":
                 blacklist_ele = ele

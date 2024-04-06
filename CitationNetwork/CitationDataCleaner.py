@@ -2,8 +2,9 @@ import json_stream
 
 from CitationNetwork.CitationAuthorNode import CitationAuthorNode
 from CitationNetwork.CitationPaperNode import CitationPaperNode
+from Framework import UtilFuncs
 from Framework.NodeContainer import NodeContainer
-import CitationNetwork.CitationUtils as CitationUtils
+import StanfordCitationNetwork.CitationUtils as CitationUtils
 import copy
 
 class CitationDataCleaner:
@@ -102,9 +103,9 @@ class CitationDataCleaner:
             node_container.AddNode(paper_node)
             process_num += 1
             if (process_num % save_frequency) == 0:
-                CitationUtils.PickleWrite(node_container, dst_path)
+                UtilFuncs.PickleWrite(node_container, dst_path)
         # save the result
-        CitationUtils.PickleWrite(node_container, dst_path)
+        UtilFuncs.PickleWrite(node_container, dst_path)
     
     def ProcessAddPaperNode(self, data_container :NodeContainer, new_container :NodeContainer, node:CitationPaperNode):
         new_node = copy.copy(node)
@@ -123,7 +124,7 @@ class CitationDataCleaner:
                     new_container.AddNode(copy.copy(author_node))
         
     def CleanStep2(self, src_path, dst_path):
-        data_container : NodeContainer = CitationUtils.PickleRead(src_path)
+        data_container : NodeContainer = UtilFuncs.PickleRead(src_path)
         new_datacontainer :NodeContainer = NodeContainer()
         node_map = data_container.GetAllNodesByType("CitationPaperNode")
         cs_fos = 'Computer science'
@@ -153,7 +154,7 @@ class CitationDataCleaner:
             self.ProcessAddPaperNode(data_container, new_datacontainer, ref_papernode)
         
         # save the result
-        CitationUtils.PickleWrite(new_datacontainer, dst_path)
+        UtilFuncs.PickleWrite(new_datacontainer, dst_path)
     
     
                 

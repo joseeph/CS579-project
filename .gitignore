@@ -4,3 +4,5 @@ _pycache_
 *.json
 *.dat
 *.zip
+*.abs
+*.txt
