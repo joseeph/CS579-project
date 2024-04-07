@@ -24,10 +24,14 @@ class CrawlerRunner:
         self.Context.Init(self.DataContainer, CrawlerDriver, self.Crawlers)
         self.CrawlerDriver = CrawlerDriver
         self.SavePath = save_path
-        self.SaveOnFinish = False
+        self.SaveOnFinish = True
+        self.SaveFrequency = 1000
 
     def SetSaveOnFinish(self, is_save):
         self.SaveOnFinish = is_save
+
+    def SetSaveFrequency(self, frequency):
+        self.SaveFrequency = frequency
 
     def LoadNodes(self):
         '''
@@ -64,6 +68,7 @@ class CrawlerRunner:
     
 
     def BeginCrawl(self):
+        crawl_num = 0
         while self.MaxNode < 0 or self.DataContainer.GetNodeCount() < self.MaxNode:
             # crawl next data crawler to create a new data node
             
@@ -74,6 +79,8 @@ class CrawlerRunner:
                 return
             if CurDataCrawler.IsEnabled(self.Context):        
                 self.DoCrawl(CurDataCrawler, self.Context, self.CrawlerDriver)                        
+                crawl_num += 1
+                self.CheckSaveBreakpoint(crawl_num, self.DataContainer, self.SavePath)
                 sleep(self.SleepTime)
 
             # crawl all info crawlers to supply information of the existing data node
@@ -81,12 +88,19 @@ class CrawlerRunner:
             cur_infocrawler :CrawlerBase
             for cur_infocrawler in info_crawlers:
                 self.DoCrawl(cur_infocrawler, self.Context, self.CrawlerDriver)                
+                crawl_num += 1
+                self.CheckSaveBreakpoint(crawl_num, self.DataContainer, self.SavePath)
                 sleep(self.SleepTime)
+                
 
         # save
         if self.SaveOnFinish:
             UtilFuncs.PickleWrite(self.DataContainer, self.SavePath)
             
+    def CheckSaveBreakpoint(self, crawl_num, obj, save_path):
+        if crawl_num % self.SaveFrequency == 0:
+            UtilFuncs.PickleWrite(obj, save_path)
+
             
     def DoCrawl(self, crawler :CrawlerBase, context, driver):
         while True:

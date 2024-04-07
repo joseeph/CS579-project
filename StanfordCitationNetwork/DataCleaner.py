@@ -38,7 +38,7 @@ class DataCleaner:
         data_container = NodeContainer()
 
         crawl_paperids = self.DoClean_Step1(data_container, date_file )
-        
+        UtilFuncs.PickleWrite(data_container, output_path)
         self.DoClean_Step2(data_container, crawl_paperids)
         UtilFuncs.PickleWrite(data_container, output_path)
         self.DoClean_Step3(data_container, citation_file)
