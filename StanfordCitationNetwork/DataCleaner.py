@@ -37,14 +37,15 @@ class DataCleaner:
         citation_file.Load(self.CitationPath)
         data_container = NodeContainer()
 
-        crawl_paperids = self.DoClean_Step1(data_container, date_file )
+        crawl_paperids = self.__DoClean_Step1(data_container, date_file )
         UtilFuncs.PickleWrite(data_container, output_path)
-        self.DoClean_Step2(data_container, crawl_paperids)
+        self.__DoClean_Step2(data_container, crawl_paperids)
         UtilFuncs.PickleWrite(data_container, output_path)
-        self.DoClean_Step3(data_container, citation_file)
+        self.__DoClean_Step3(data_container, citation_file)
         UtilFuncs.PickleWrite(data_container, output_path)
+
     
-    def DoClean_Step1(self, data_container:NodeContainer, date_file: HepThDateFile):
+    def __DoClean_Step1(self, data_container:NodeContainer, date_file: HepThDateFile):
         '''
         step 1: create all the paper nodes
         '''
@@ -80,7 +81,7 @@ class DataCleaner:
     
     
 
-    def DoClean_Step2(self, data_container :NodeContainer, crawl_paperids):
+    def __DoClean_Step2(self, data_container :NodeContainer, crawl_paperids):
         '''
         step 2: crawl from arxiv, fill the data
         '''
@@ -93,19 +94,44 @@ class DataCleaner:
             runner.AddDataNodeCrawler(crawler)
         runner.BeginCrawl()
 
-    def DoClean_Step3(self, data_container: NodeContainer, citation_file :HepThCitationFile):
+    def __DoClean_Step3(self, data_container: NodeContainer, citation_file :HepThCitationFile):
         '''
         fill the citation information
         '''
         for from_nodeid in citation_file.EdgeMap:
-            from_uid = CitationUtils.BuildCitationPaperUID(from_nodeid)
-            node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", from_uid)
+            #from_uid = CitationUtils.BuildCitationPaperUID(from_nodeid)
+            node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", from_nodeid)
             if node == None:
                 continue
             to_nodeidlist = citation_file.EdgeMap[from_nodeid]
             for to_nodeid in to_nodeidlist:
                 node.AddReference(to_nodeid)
 
+    def __DoClean_Step4(self, data_container :NodeContainer, citation_file :HepThCitationFile):
+        '''
+        1. many edges in the citation file are not included
+        2. many information are not included
+        
+        firstly I need to add new nodes from citation_file
+        '''
+        tocrawl_paperids = []
+        for from_node in citation_file.EdgeMap:
+            node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", from_node)
+            if node == None:
+                tocrawl_paperids.append(from_node)
+        
+        # now I have node names to crawl
+
+
+        
+        pass
+
+    def DocleanForStep3(self, data_path):
+        data_container = UtilFuncs.PickleRead(data_path)
+        citation_file = HepThCitationFile()
+        citation_file.Load(self.CitationPath)
+        self.__DoClean_Step3(data_container, citation_file)
+        return data_container
 
 
     
