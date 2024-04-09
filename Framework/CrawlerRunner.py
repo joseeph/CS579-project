@@ -47,11 +47,11 @@ class CrawlerRunner:
     def SetSleepTime(self, sleep_time):
         self.SleepTime = sleep_time
 
-    def AddDataNodeCrawler(self, Crawler :CrawlerBase):
+    def AddDataNodeCrawler(self, Crawler :CrawlerBase, is_append=True):
         '''
         add next crawler
         '''
-        self.Crawlers.AddNodeCrawler(Crawler)
+        self.Crawlers.AddNodeCrawler(Crawler, is_append)
     
 
 

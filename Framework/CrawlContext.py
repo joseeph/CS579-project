@@ -12,11 +12,11 @@ class CrawlContext:
         self.Crawlers = crawler_queue
         
 
-    def AddDataCrawler(self, crawler :'CrawlerBase'):
+    def AddDataCrawler(self, crawler :'CrawlerBase', is_append = True):
         '''
         add a crawler at the end of the q
         '''
-        self.Crawlers.AddNodeCrawler(crawler)
+        self.Crawlers.AddNodeCrawler(crawler, is_append)
 
     def AddInfoCrawler(self, crawler :'CrawlerBase'):
         self.Crawlers.AddInfoCrawler(crawler)

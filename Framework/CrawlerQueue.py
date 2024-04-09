@@ -8,8 +8,11 @@ class CrawlerQueue:
         self.InfoCrawlers = []
         pass
 
-    def AddNodeCrawler(self ,crawler :NodeCrawlerBase):
-        self.NodeCrawlers.append(crawler)
+    def AddNodeCrawler(self ,crawler :NodeCrawlerBase, is_append):
+        if is_append:
+            self.NodeCrawlers.append(crawler)
+        else:
+            self.NodeCrawlers.insert(0, crawler)
 
     def AddInfoCrawler(self, crawler :InfoCrawlerBase):
         self.InfoCrawlers.append(crawler)

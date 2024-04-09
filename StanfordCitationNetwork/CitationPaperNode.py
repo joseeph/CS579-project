@@ -23,7 +23,11 @@ class CitationPaperNode(GraphDataNodeBase):
         self.Dt = dt
         
     def AddAuthor(self, author_name):
-        self.AuthorNames.append(author_name)
+        if not (author_name in self.AuthorNames):
+            self.AuthorNames.append(author_name)
 
     def AddReference(self, id):
         self.ReferenceIDs.append(id)
+
+    def HasReference(self, id):
+        return id in self.ReferenceIDs

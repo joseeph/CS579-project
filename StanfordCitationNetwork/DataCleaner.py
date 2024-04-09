@@ -107,24 +107,88 @@ class DataCleaner:
             for to_nodeid in to_nodeidlist:
                 node.AddReference(to_nodeid)
 
-    def __DoClean_Step4(self, data_container :NodeContainer, citation_file :HepThCitationFile):
+    def __DoClean_Step4(self, data_container :NodeContainer, citation_file :HepThCitationFile, date_file :HepThDateFile):
         '''
         1. many edges in the citation file are not included
         2. many information are not included
         
         firstly I need to add new nodes from citation_file
         '''
+        date_num = len(date_file.PaperDateMap)
+        node_num = data_container.GetNodeCount()
         tocrawl_paperids = []
-        for from_node in citation_file.EdgeMap:
-            node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", from_node)
-            if node == None:
-                tocrawl_paperids.append(from_node)
-        
-        # now I have node names to crawl
+        from_num = len(citation_file.EdgeMap)
+        for from_nodeid in citation_file.EdgeMap:
 
+            from_node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", from_nodeid)
+            if from_node == None:
+                from_node = CitationPaperNode()
+                from_node.SetID(from_nodeid)
+                data_container.AddNode(from_node)
+                tocrawl_paperids.append(from_nodeid)                
+
+            to_nodeids = citation_file.EdgeMap[from_nodeid]
+            for to_nodeid in to_nodeids:
+                if not from_node.HasReference(to_nodeid):
+                    from_node.AddReference(to_nodeid)
+
+                to_node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", to_nodeid)
+                if to_node == None:
+                    to_node = CitationPaperNode()
+                    to_node.SetID(to_nodeid)
+                    data_container.AddNode(to_node)
+                    tocrawl_paperids.append(to_nodeid)
+        
+        # now I have paper names to crawl
+        return tocrawl_paperids
+    
+    def __Doclean_Step5(self, data_container :NodeContainer, citation_file :HepThCitationFile, output_path ):
+        '''
+        crawl the paper info       
+        '''
+        crawl_frompaperids = []
+        crawl_topaperids = []
+        # find all papers need to crawl
+        for from_nodeid in citation_file.EdgeMap:
+            from_node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", from_nodeid)
+            if len(from_node.AuthorNames) == 0:
+                crawl_frompaperids.append(from_nodeid)
+            
+            to_paperids = citation_file.EdgeMap[from_nodeid]
+            for to_paperid in to_paperids:
+                to_node :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", to_paperid)
+                if len(to_node.AuthorNames) == 0:
+                    if  to_paperid not in crawl_topaperids:
+                        crawl_topaperids.append(to_paperid)
+
+        crawl_paperids = [] + crawl_frompaperids
+        for to_paperid in crawl_topaperids:
+            if to_paperid not in crawl_paperids:
+                crawl_paperids.append(to_paperid)
 
         
+        node_map = data_container.GetAllNodesByType("CitationPaperNode")
+        for paper_id in node_map:
+            cur_node :CitationPaperNode = node_map[paper_id]
+            if len(cur_node.AuthorNames) == 0:
+                # we need to crawl it
+                if paper_id not in crawl_paperids:
+                    crawl_paperids.append(paper_id)
+
+        driver = ArxivCrawlerDriver()
+        runner = CrawlerRunner(driver, output_path, data_container)
+        runner.SetMaxNode(-1)
+        runner.SetSaveOnFinish(True)
+        runner.SetSaveFrequency(50)
+        for paper_id in crawl_paperids:
+            crawler = ArxivCitationPaperCrawler()
+            crawler.SetCrawlOrderByPhFirst(False)
+            crawler.SetPaperID(paper_id)
+            runner.AddDataNodeCrawler(crawler)
+        runner.BeginCrawl()
+
         pass
+
 
     def DocleanForStep3(self, data_path):
         data_container = UtilFuncs.PickleRead(data_path)
@@ -133,5 +197,22 @@ class DataCleaner:
         self.__DoClean_Step3(data_container, citation_file)
         return data_container
 
+    def DocleanForStep4(self, data_path, output_path):
+        data_container = UtilFuncs.PickleRead(data_path)
+        citation_file = HepThCitationFile()
+        citation_file.Load(self.CitationPath)
+        date_file = HepThDateFile()
+        date_file.Load(self.DatePath)
+        self.__DoClean_Step4(data_container, citation_file, date_file)
 
+        return data_container
+
+    def DocleanForStep5(self, data_path, output_path):
+        data_container = UtilFuncs.PickleRead(data_path)
+        citation_file = HepThCitationFile()
+        citation_file.Load(self.CitationPath)
+        #date_file = HepThDateFile()
+        #date_file.Load(self.DatePath)
+        self.__Doclean_Step5(data_container, citation_file, output_path)
+        pass
     
