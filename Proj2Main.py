@@ -5,7 +5,7 @@ from Framework import UtilFuncs
 from StanfordCitationNetwork.CitationPaperNode import CitationPaperNode
 import StanfordCitationNetwork.CitationUtils as CitationUtils
 from Framework.NodeContainer import NodeContainer
-
+from StanfordCitationNetwork.DataNewCleaner import DataNewCleaner
 from StanfordCitationNetwork.DataCleaner import DataCleaner
 '''
 def Test():
@@ -129,8 +129,33 @@ def CleanStep5():
     cleaner.SetAbstractParentDir(abstract_parentdir)
     data_container = cleaner.DocleanForStep5(data_path, output_path)
 
+
+def NewCleanStep1():
+    cleaner = DataNewCleaner()
+    citationfile_path = "./Data/cit-HepTh.txt"
+    datefile_path = "./Data/cit-HepTh-dates.txt"
+    abstract_parentdir = "./Data/cit-HepTh-abstracts"
+    data_path = "./Data/CitationCleaned.dat"
+    output_path = "./Data/CitationCleaned.dat"
+    cleaner.SetCitationPath(citationfile_path)
+    cleaner.SetDatePath(datefile_path)
+    cleaner.SetAbstractParentDir(abstract_parentdir)
+    cleaner.DoCleanStep1(output_path)
+
+def NewCleanStep2():
+    cleaner = DataNewCleaner()
+    citationfile_path = "./Data/cit-HepTh.txt"
+    datefile_path = "./Data/cit-HepTh-dates.txt"
+    abstract_parentdir = "./Data/cit-HepTh-abstracts"
+    data_path = "./Data/CitationCleaned.dat"
+    output_path = "./Data/CitationCleaned.dat"
+    cleaner.SetCitationPath(citationfile_path)
+    cleaner.SetDatePath(datefile_path)
+    cleaner.SetAbstractParentDir(abstract_parentdir)
+    cleaner.DoCleanStep2(data_path, output_path)
+
 if __name__ == "__main__":
     
-    CleanStep5()
+    NewCleanStep2()
     
     pass

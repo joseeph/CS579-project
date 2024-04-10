@@ -99,6 +99,8 @@ class CrawlerRunner:
             
     def CheckSaveBreakpoint(self, crawl_num, obj, save_path):
         if crawl_num % self.SaveFrequency == 0:
+            crawler_count = self.Crawlers.GetNodeCrawlerCount()
+            print("checkpoint: crawled:[" + str(crawl_num) + "]   data crawlers in queue:[" + str(crawler_count) + ']')
             UtilFuncs.PickleWrite(obj, save_path)
 
             
