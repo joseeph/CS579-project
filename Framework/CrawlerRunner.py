@@ -76,7 +76,7 @@ class CrawlerRunner:
             CurDataCrawler = self.GetNextNodeCrawler()
             if CurDataCrawler == None:
                 # there is no more data crawlers
-                return
+                break
             if CurDataCrawler.IsEnabled(self.Context):        
                 self.DoCrawl(CurDataCrawler, self.Context, self.CrawlerDriver)                        
                 crawl_num += 1

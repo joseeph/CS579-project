@@ -98,12 +98,17 @@ class DataNewCleaner:
         for to_id in crawlto_paperids:
             if to_id not in tocrawl_paperids:
                 tocrawl_paperids.append(to_id)
+        
+        if len(tocrawl_paperids) == 0:
+            print("no paper needs crawling")
+            return
         # now we have paper ids to crawl
         driver = ArxivCrawlerDriver()
         runner = CrawlerRunner(driver, output_path, data_container)
         runner.SetMaxNode(-1)
         runner.SetSaveOnFinish(True)
         runner.SetSaveFrequency(50)
+        print("There are " + str(len(tocrawl_paperids)) + " papers to crawl.")
         for paper_id in tocrawl_paperids:
             crawler = ArxivCitationPaperCrawler()
             crawler.SetCrawlOrderByPhFirst(False)

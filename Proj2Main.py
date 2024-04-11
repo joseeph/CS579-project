@@ -156,6 +156,6 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    NewCleanStep2()
+    LoadData()
     
     pass
