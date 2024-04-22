@@ -29,8 +29,12 @@ def LoadData():
 def BuildGraphs():
     data_container :NodeContainer = UtilFuncs.PickleRead("./Data/CitationCleaned.dat")
     builder = CitationNetworkBuilder()
-    builder.BuildCitationDataFrame(data_container, "./Data/ResultDF1.pqt")
+    builder.BuildCitationDataFrame(data_container, "./Data/ResultDF1.dat")
     pass
+
+def LoadDF():
+    df = UtilFuncs.PickleRead('./Data/ResultDF1.dat')
+    print(df.head())
 
 def SummaryDataContainer(data_container):
     paper_nodemap = data_container.GetAllNodesByType("CitationPaperNode")
@@ -75,6 +79,7 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    BuildGraphs()
+    #BuildGraphs()
+    LoadDF()
     
     pass
