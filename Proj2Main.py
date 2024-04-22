@@ -2,6 +2,7 @@
 
 from ArxivCrawler.ArxivCrawlerDriver import ArxivCrawlerDriver
 from Framework import UtilFuncs
+from StandfordCitationNetworkAnalysis.CitationNetworkBuilder import CitationNetworkBuilder
 from StanfordCitationNetwork.CitationPaperNode import CitationPaperNode
 import StanfordCitationNetwork.CitationUtils as CitationUtils
 from Framework.NodeContainer import NodeContainer
@@ -25,6 +26,11 @@ def LoadData():
     data_container :NodeContainer = UtilFuncs.PickleRead("./Data/CitationCleaned.dat")
     SummaryDataContainer(data_container)
     
+def BuildGraphs():
+    data_container :NodeContainer = UtilFuncs.PickleRead("./Data/CitationCleaned.dat")
+    builder = CitationNetworkBuilder()
+    builder.BuildCitationDataFrame(data_container, "./Data/ResultDF1.pqt")
+    pass
 
 def SummaryDataContainer(data_container):
     paper_nodemap = data_container.GetAllNodesByType("CitationPaperNode")
@@ -69,6 +75,6 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    LoadData()
+    BuildGraphs()
     
     pass
