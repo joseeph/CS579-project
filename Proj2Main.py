@@ -80,7 +80,7 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    BuildGraphs()
-    #LoadDF()
+    #BuildGraphs()
+    LoadDF()
     
     pass
