@@ -35,6 +35,7 @@ def BuildGraphs():
 def LoadDF():
     df = UtilFuncs.PickleRead('./Data/ResultDF1.dat')
     print(df.head())
+    print(len(df))
 
 def SummaryDataContainer(data_container):
     paper_nodemap = data_container.GetAllNodesByType("CitationPaperNode")
@@ -79,7 +80,7 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    #BuildGraphs()
-    LoadDF()
+    BuildGraphs()
+    #LoadDF()
     
     pass
