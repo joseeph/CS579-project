@@ -8,7 +8,7 @@ class MiscInformationBuilder:
         pass
 
     def BuildMiscInfoDF(self, data_container :NodeContainer, output_path):
-        from_year = 1993
+        from_year = 1992
         to_year = 2003
         all_nodemap = data_container.GetAllNodesByType("CitationPaperNode")
         nodeid_list = []

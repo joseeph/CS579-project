@@ -3,6 +3,7 @@
 from ArxivCrawler.ArxivCrawlerDriver import ArxivCrawlerDriver
 from Framework import UtilFuncs
 from StandfordCitationNetworkAnalysis.CitationNetworkBuilder import CitationNetworkBuilder
+from StandfordCitationNetworkAnalysis.CoauthorNetworkBuilder import CoauthorNetworkBuilder
 from StandfordCitationNetworkAnalysis.MiscInformationBuilder import MiscInformationBuilder
 from StanfordCitationNetwork.CitationPaperNode import CitationPaperNode
 import StanfordCitationNetwork.CitationUtils as CitationUtils
@@ -32,6 +33,11 @@ def BuildCitationGraphDF():
     builder = CitationNetworkBuilder()
     builder.BuildCitationDataFrame(data_container, "./Data/CitationGraphDF.dat")
     
+def BuildCoauthorGraphDF():
+    data_container :NodeContainer = UtilFuncs.PickleRead("./Data/CitationCleaned.dat")
+    builder = CoauthorNetworkBuilder()
+    builder.BuildCoauthorDataFrame(data_container, "./Data/CoauthorGraphDF.dat")
+
 def BuildMiscInfoDF():
     data_container :NodeContainer = UtilFuncs.PickleRead("./Data/CitationCleaned.dat")
     builder = MiscInformationBuilder()
@@ -85,8 +91,9 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    #BuildGraphs()
-    BuildMiscInfoDF()
+    #BuildCitationGraphDF()
+    #BuildMiscInfoDF()
+    BuildCoauthorGraphDF()
     #LoadDF()
     
     pass

@@ -15,7 +15,7 @@ class CitationNetworkBuilder:
 
         graph_dict = {}
 
-        from_year = 1993
+        from_year = 1992
         to_year = 2003
         # from 1993 to 2003
         for cur_year in range(from_year, to_year + 1):
@@ -45,11 +45,11 @@ class CitationNetworkBuilder:
 
         # betweenness centrality
         
-        betweenness_centrality_map = {}
-        for cur_year in range(from_year, to_year + 1):
-            graph = graph_dict[cur_year]
-            betweenness_map = nx.betweenness_centrality(graph)
-            betweenness_centrality_map[cur_year] = betweenness_map
+        # betweenness_centrality_map = {}
+        # for cur_year in range(from_year, to_year + 1):
+        #     graph = graph_dict[cur_year]
+        #     betweenness_map = nx.betweenness_centrality(graph)
+        #     betweenness_centrality_map[cur_year] = betweenness_map
         
 
         df = pd.DataFrame()
@@ -57,12 +57,11 @@ class CitationNetworkBuilder:
         year_list = []
         in_degreecen_list = []
         out_degreecen_list = []
-        betweenness_centrality_list = []
+        
         for cur_year in range(from_year, to_year + 1):
             cur_graph :nx.DiGraph = graph_dict[cur_year]
             in_degree_cen = in_degree_centrality_map[cur_year]
-            out_degree_cen = out_degree_centrality_map[cur_year]
-            betweenness_centrality = betweenness_centrality_map[cur_year]
+            out_degree_cen = out_degree_centrality_map[cur_year]            
 
             for node_id in cur_graph.nodes:
                 # node id
@@ -70,17 +69,16 @@ class CitationNetworkBuilder:
                 year_list.append(cur_year)
                 in_degree_centrality = in_degree_cen[node_id]
                 out_degree_centrality = out_degree_cen[node_id]
-                betweenness = betweenness_centrality[node_id]
                 in_degreecen_list.append(in_degree_centrality)
                 out_degreecen_list.append(out_degree_centrality)
-                betweenness_centrality_list.append(betweenness)
+                
                 
             
         df['NodeID'] = nodeid_list
         df['Year'] = year_list
         df['InDegreeCentrality'] = in_degreecen_list
         df['OutDegreeCentrality'] = out_degreecen_list
-        df['BetweennessCentrality'] = betweenness_centrality_list
+        
         
         UtilFuncs.PickleWrite(df, output_path)
         
