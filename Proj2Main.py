@@ -38,7 +38,7 @@ def BuildMiscInfoDF():
     builder.BuildMiscInfoDF(data_container, "./Data/MiscInfoDF.dat")
 
 def LoadDF():
-    df = UtilFuncs.PickleRead('./Data/ResultDF1.dat')
+    df = UtilFuncs.PickleRead('./Data/CitationGraphDF.dat')
     print(df.head())
     print(len(df))
 

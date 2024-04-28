@@ -15,16 +15,58 @@ df <- read.csv("./Data/Citation.csv")
 
 ```{r}
 df %>%
-  mutate(PaperID=as.factor(PaperID)) ->
-  df
+  mutate(PaperID=as.factor(PaperID)) %>%
+  group_by(PaperID) %>%
+  mutate(AuthorImportance_MaxDegree_Lag1 = lag(AuthorImportance_MaxDegree, n=1, order_by=Year)) %>%
+  mutate(AuthorImportance_SumDegree_Lag1 = lag(AuthorImportance_SumDegree, n=1, order_by=Year)) ->
+  experiment_data
 
-summary(df)
+summary(experiment_data)
 ```
 
 
 ```{r}
 f <- PaperImportance_Degree ~ AuthorImportance_MaxDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
 
-model <- felm(f, df)
+col_names <- c('PaperImportance_Degree', 'AuthorImportance_MaxDegree', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
+
+experiment_data %>%
+  na.omit() ->
+  data
+
+model <- felm(f, data)
 summary(model)
 ```
+
+Endogeneity check
+```{r}
+f <- PaperImportance_Degree ~ AuthorImportance_MaxDegree_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names <- c('PaperImportance_Degree', 'AuthorImportance_MaxDegree_Lag1', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
+
+experiment_data %>%
+  na.omit() ->
+  data
+
+model <- felm(f, data)
+summary(model)
+
+```
+
+robutstness check
+```{r}
+f <- PaperImportance_Degree ~ AuthorImportance_SumDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names <- c('PaperImportance_Degree', 'AuthorImportance_SumDegree', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
+
+experiment_data %>%
+  na.omit() ->
+  data
+
+model <- felm(f, data)
+summary(model)
+```
+
+
+
+
