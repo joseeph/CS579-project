@@ -10,7 +10,7 @@ library(lfe)
 ```
 ```{r}
 df <- read.csv("./Data/Citation.csv")
-
+nrow(df)
 ```
 
 ```{r}
@@ -36,6 +36,7 @@ experiment_data %>%
 
 model <- felm(f, data)
 summary(model)
+print(nrow(data))
 ```
 
 Endogeneity check
