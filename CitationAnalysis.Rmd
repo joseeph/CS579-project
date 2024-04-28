@@ -10,15 +10,15 @@ library(lfe)
 ```
 ```{r}
 df <- read.csv("./Data/Citation.csv")
-nrow(df)
+summary(df)
 ```
 
 ```{r}
 df %>%
   mutate(PaperID=as.factor(PaperID)) %>%
   group_by(PaperID) %>%
-  mutate(AuthorImportance_MaxDegree_Lag1 = lag(AuthorImportance_MaxDegree, n=1, order_by=Year)) %>%
-  mutate(AuthorImportance_SumDegree_Lag1 = lag(AuthorImportance_SumDegree, n=1, order_by=Year)) ->
+  mutate(AuthorDegreeCentrality_Max_Lag1 = lag(AuthorDegreeCentrality_Max, n=1, order_by=Year)) %>%
+  mutate(AuthorDegreeCentrality_Sum_Lag1 = lag(AuthorDegreeCentrality_Sum, n=1, order_by=Year)) ->
   experiment_data
 
 summary(experiment_data)

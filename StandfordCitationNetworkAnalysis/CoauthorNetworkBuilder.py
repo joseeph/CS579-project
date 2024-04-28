@@ -31,7 +31,7 @@ class CoauthorNetworkBuilder:
         for cur_year in range(from_year, to_year + 1):
             # the coauthor grpah is directional graph
             coauthor_graph = nx.DiGraph()
-            paper_name_dict = {}
+            #paper_name_dict = {}
             paper_node :CitationPaperNode = None
             for paper_id in paper_map:
                 # add this paper's ID
@@ -40,21 +40,21 @@ class CoauthorNetworkBuilder:
                     # first author
                     first_author = paper_node.AuthorNames[0]
                     coauthor_graph.add_node(first_author)
-                    if first_author in paper_name_dict:
-                        paper_name_dict[first_author]['paper'].append(paper_node.Name)
-                    else:
-                        paper_name_dict[first_author] = {'paper': [paper_node.Name], 'author':'first', 'paper_id':paper_id}
+                    #if first_author in paper_name_dict:
+                    #    paper_name_dict[first_author]['paper'].append(paper_node.Name)
+                    #else:
+                    #    paper_name_dict[first_author] = {'paper': [paper_node.Name], 'author':'first', 'paper_id':paper_id}
                     if len(paper_node.AuthorNames)>1:
                         for coauthor_name in paper_node.AuthorNames[1:]:
                             # citation_paper :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", citation_paperid)
                             # if citation_paper.Dt.year <= cur_year:
                             coauthor_graph.add_node(coauthor_name)
                             coauthor_graph.add_edge(coauthor_name, first_author)
-                            if coauthor_name in paper_name_dict:
-                                paper_name_dict[coauthor_name]['paper'].append(paper_node.Name)
-                            else:
-                                paper_name_dict[coauthor_name] = {'paper': [paper_node.Name], 'author':'second', 'paper_id':paper_id}
-            nx.set_node_attributes(coauthor_graph, paper_name_dict)
+                            #if coauthor_name in paper_name_dict:
+                            #    paper_name_dict[coauthor_name]['paper'].append(paper_node.Name)
+                            #else:
+                            #    paper_name_dict[coauthor_name] = {'paper': [paper_node.Name], 'author':'second', 'paper_id':paper_id}
+            #nx.set_node_attributes(coauthor_graph, paper_name_dict)
             graph_dict[cur_year] = coauthor_graph
         # degree centrality
         degree_centrality_map = {}
@@ -62,9 +62,9 @@ class CoauthorNetworkBuilder:
         for cur_year in range(from_year, to_year + 1):
             graph = graph_dict[cur_year]
             degree_map = nx.degree_centrality(graph)
-            close_degree_map = nx.closeness_centrality(graph)
+            closecen_map = nx.closeness_centrality(graph)
             degree_centrality_map[cur_year] = degree_map
-            closeness_centrality_map[cur_year] = close_degree_map
+            closeness_centrality_map[cur_year] = closecen_map
 
         # betweenness centrality
         
@@ -77,7 +77,7 @@ class CoauthorNetworkBuilder:
 
         df = pd.DataFrame()
         # nodeid_list = []
-        paperid_list = []
+        paper_id_list = []
         year_list = []
         max_degreecen_list = []
         max_closecen_list = []
@@ -89,38 +89,39 @@ class CoauthorNetworkBuilder:
         # paper_name_list = []
         # authorship= []
 
-        paper_id_list = []
+        
         for cur_year in range(from_year, to_year + 1):
             
             curyear_degreecen_map = degree_centrality_map[cur_year]
             curyear_closenesscen_map = closeness_centrality_map[cur_year]
             for paper_id in paper_map:
                 paper_node :CitationPaperNode = paper_map[paper_id]
-                paperid_list.append(paper_id)
-                year_list.append(cur_year)
-                # the degree centralities of all authors
-                authors_degree_cenlist = []
-                # the closeness centralities of all authors
-                authors_closeness_cenlist = []
-                for author_name in paper_node.AuthorNames:
-                    # degree centrality
-                    degree_centrality = curyear_degreecen_map[author_name]
-                    # closeness centrality
-                    closeness_centrality = curyear_closenesscen_map[author_name]
-                    authors_degree_cenlist.append(degree_centrality)
-                    authors_closeness_cenlist.append(closeness_centrality)
-                # now find the max degree centrality 
-                max_degree_cen = np.max(authors_degree_cenlist)
-                # find the max closeness centrality
-                max_close_cen = np.max(authors_closeness_cenlist)
-                # sum the degree centrality
-                sum_degree_cen = np.sum(authors_degree_cenlist)
-                # sum the closenes c entrality
-                sum_close_cen = np.sum(authors_closeness_cenlist)
-                max_degreecen_list.append(max_degree_cen)
-                max_closecen_list.append(max_close_cen)
-                sum_degreecen_list.append(sum_degree_cen)
-                sum_closecen_list.append(sum_close_cen)
+                if paper_node.Dt.year <= cur_year:
+                    paper_id_list.append(paper_id)
+                    year_list.append(cur_year)
+                    # the degree centralities of all authors
+                    authors_degree_cenlist = []
+                    # the closeness centralities of all authors
+                    authors_closeness_cenlist = []
+                    for author_name in paper_node.AuthorNames:
+                        # degree centrality
+                        degree_centrality = curyear_degreecen_map[author_name]
+                        # closeness centrality
+                        closeness_centrality = curyear_closenesscen_map[author_name]
+                        authors_degree_cenlist.append(degree_centrality)
+                        authors_closeness_cenlist.append(closeness_centrality)
+                    # now find the max degree centrality 
+                    max_degree_cen = np.max(authors_degree_cenlist)
+                    # find the max closeness centrality
+                    max_close_cen = np.max(authors_closeness_cenlist)
+                    # sum the degree centrality
+                    sum_degree_cen = np.sum(authors_degree_cenlist)
+                    # sum the closenes c entrality
+                    sum_close_cen = np.sum(authors_closeness_cenlist)
+                    max_degreecen_list.append(max_degree_cen)
+                    max_closecen_list.append(max_close_cen)
+                    sum_degreecen_list.append(sum_degree_cen)
+                    sum_closecen_list.append(sum_close_cen)
                 
                     
 

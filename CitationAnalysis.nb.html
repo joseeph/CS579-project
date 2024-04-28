@@ -1499,8 +1499,6 @@ window.initializeCodeFolding = function(show) {
   // select all R code blocks
   var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
   rCodeBlocks.each(function() {
-    // skip if the block has fold-none class
-    if ($(this).hasClass('fold-none')) return;
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
@@ -1511,14 +1509,12 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
         .attr('data-toggle', 'collapse')
-        .attr('data-bs-toggle', 'collapse') // BS5
         .attr('data-target', '#' + id)
-        .attr('data-bs-target', '#' + id)   // BS5
         .attr('aria-expanded', showThis)
         .attr('aria-controls', id);
 
@@ -1537,7 +1533,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Show');
+      showCodeText.text('Code');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -1608,7 +1604,6 @@ if (window.hljs) {
 
 
 
-
 <style type="text/css">
 #rmd-source-code {
 display: none;
@@ -1639,9 +1634,6 @@ outline: none;
 }
 summary {
 display: list-item;
-}
-details > summary > p:only-child {
-display: inline;
 }
 pre code {
 padding: 0;
@@ -1682,17 +1674,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -1735,7 +1733,7 @@ display: none;
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -1754,66 +1752,88 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGRwbHlyKVxubGlicmFyeShwc3ljaClcbmxpYnJhcnkobGZlKVxuYGBgIn0= -->
-<pre class="r"><code>library(tidyverse)
-library(dplyr)
-library(psych)
-library(lfe)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyverse)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdkYnBseXInOlxuICBtZXRob2QgICAgICAgICBmcm9tXG4gIHByaW50LnRibF9sYXp5ICAgICBcbiAgcHJpbnQudGJsX3NxbCAgICAgIFxu4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4xIOKUgOKUgFxu4pyUIGdncGxvdDIgMy40LjIgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjEuNiAgICAg4pyUIGRwbHlyICAgMS4wLjlcbuKclCB0aWR5ciAgIDEuMi4wICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMi4xLjIgICAgIOKclCBmb3JjYXRzIDAuNS4xXG5XYXJuaW5nOiBwYWNrYWdlIOKAmHRpYmJsZeKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJh0aWR5cuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJhyZWFkcuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJhkcGx5cuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJhzdHJpbmdy4oCZIHdhcyBidWlsdCB1bmRlciBSIHZlcnNpb24gNC4xLjFXYXJuaW5nOiBwYWNrYWdlIOKAmGZvcmNhdHPigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiA0LjEuMeKUgOKUgCBDb25mbGljdHMg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAIHRpZHl2ZXJzZV9jb25mbGljdHMoKSDilIDilIBcbuKcliBkcGx5cjo6ZmlsdGVyKCkgbWFza3Mgc3RhdHM6OmZpbHRlcigpXG7inJYgZHBseXI6OmxhZygpICAgIG1hc2tzIHN0YXRzOjpsYWcoKVxuIn0= -->
+<pre><code>Registered S3 methods overwritten by &#39;dbplyr&#39;:
+  method         from
+  print.tbl_lazy     
+  print.tbl_sql      
+── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+✔ ggplot2 3.4.2     ✔ purrr   0.3.4
+✔ tibble  3.1.6     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1
+Warning: package ‘tibble’ was built under R version 4.1.1Warning: package ‘tidyr’ was built under R version 4.1.1Warning: package ‘readr’ was built under R version 4.1.1Warning: package ‘dplyr’ was built under R version 4.1.1Warning: package ‘stringr’ was built under R version 4.1.1Warning: package ‘forcats’ was built under R version 4.1.1── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmxpYnJhcnkocHN5Y2gpXG5gYGAifQ== -->
+<pre class="r"><code>library(dplyr)
+library(psych)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSDigJhwc3ljaOKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYcHN5Y2jigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmdncGxvdDLigJk6XG5cbiAgICAlKyUsIGFscGhhXG4ifQ== -->
+<pre><code>Warning: package ‘psych’ was built under R version 4.1.1
+Attaching package: ‘psych’
+
+The following objects are masked from ‘package:ggplot2’:
+
+    %+%, alpha</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsZmUpXG5gYGAifQ== -->
+<pre class="r"><code>library(lfe)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSDigJhsZmXigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiA0LjEuMUxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogTWF0cml4XG5XYXJuaW5nOiBwYWNrYWdlIOKAmE1hdHJpeOKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYTWF0cml44oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTp0aWR5cuKAmTpcblxuICAgIGV4cGFuZCwgcGFjaywgdW5wYWNrXG4ifQ== -->
+<pre><code>Warning: package ‘lfe’ was built under R version 4.1.1Loading required package: Matrix
+Warning: package ‘Matrix’ was built under R version 4.1.1
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVhZC5jc3YoXCIuL0RhdGEvQ2l0YXRpb24uY3N2XCIpXG5ucm93KGRmKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVhZC5jc3YoXCIuL0RhdGEvQ2l0YXRpb24uY3N2XCIpXG5zdW1tYXJ5KGRmKVxuYGBgIn0= -->
 <pre class="r"><code>df &lt;- read.csv(&quot;./Data/Citation.csv&quot;)
-nrow(df)</code></pre>
+summary(df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDcyMjU2XG4ifQ== -->
-<pre><code>[1] 72256</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgIFggICAgICAgICAgICAgUGFwZXJJRCAgICAgICAgICAgICBZZWFyICAgICAgUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSBBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCBBdXRob3JDbG9zZW5lc3NDZW50cmFsaXR5X01heFxuIE1pbi4gICA6ICAgICAwICAgTWluLiAgIDogICAxMDAxICAgTWluLiAgIDoxOTkyICAgTWluLiAgIDowLjAwMGUrMDAgICAgICBNaW4uICAgOjAuMDAwMDAwMCAgICAgICAgICBNaW4uICAgOjAuMDAwZSswMCAgICAgICAgICAgIFxuIDFzdCBRdS46IDQyMTQwICAgMXN0IFF1Ljo5MjEyMTU1ICAgMXN0IFF1LjoxOTk4ICAgMXN0IFF1LjozLjczMmUtMDUgICAgICAxc3QgUXUuOjAuMDAwMTQ0MSAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgIFxuIE1lZGlhbiA6IDg0MjgxICAgTWVkaWFuIDo5NTAyMTM2ICAgTWVkaWFuIDoyMDAwICAgTWVkaWFuIDoxLjQ5M2UtMDQgICAgICBNZWRpYW4gOjAuMDAwMzgzMCAgICAgICAgICBNZWRpYW4gOjIuNDY0ZS0wNCAgICAgICAgICAgIFxuIE1lYW4gICA6IDg0MjgxICAgTWVhbiAgIDo3OTM2NTkxICAgTWVhbiAgIDoyMDAwICAgTWVhbiAgIDo1LjE1OWUtMDQgICAgICBNZWFuICAgOjAuMDAwNTc3NSAgICAgICAgICBNZWFuICAgOjYuNTUwZS0wNCAgICAgICAgICAgIFxuIDNyZCBRdS46MTI2NDIyICAgM3JkIFF1Ljo5NzA0MTgxICAgM3JkIFF1LjoyMDAyICAgM3JkIFF1Ljo0LjY4MmUtMDQgICAgICAzcmQgUXUuOjAuMDAwODAzNSAgICAgICAgICAzcmQgUXUuOjcuMzA0ZS0wNCAgICAgICAgICAgIFxuIE1heC4gICA6MTY4NTYyICAgTWF4LiAgIDo5OTEyMjkzICAgTWF4LiAgIDoyMDAzICAgTWF4LiAgIDo4LjY5M2UtMDIgICAgICBNYXguICAgOjAuMDA2NzMxNSAgICAgICAgICBNYXguICAgOjEuMDI3ZS0wMiAgICAgICAgICAgIFxuIEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtIEF1dGhvckNsb3NlbmVzc0NlbnRyYWxpdHlfU3VtICAgWWVhcnNUb05vdyAgICAgIFJlZmVyZW5jZU51bSAgICAgICBBdXRob3JOdW0gICAgXG4gTWluLiAgIDowLjAwMDAwMDAgICAgICAgICAgTWluLiAgIDowLjAwMGUrMDAgICAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICBNaW4uICAgOiAgMC4wMDAgICBNaW4uICAgOjEuMDAwICBcbiAxc3QgUXUuOjAuMDAwMjAxNiAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgICAxc3QgUXUuOiAxLjAwMCAgIDFzdCBRdS46ICAxLjAwMCAgIDFzdCBRdS46MS4wMDAgIFxuIE1lZGlhbiA6MC4wMDA1NDM5ICAgICAgICAgIE1lZGlhbiA6Mi44ODJlLTA0ICAgICAgICAgICAgIE1lZGlhbiA6IDMuMDAwICAgTWVkaWFuIDogIDUuMDAwICAgTWVkaWFuIDoyLjAwMCAgXG4gTWVhbiAgIDowLjAwMDg1MDMgICAgICAgICAgTWVhbiAgIDo4LjEzNGUtMDQgICAgICAgICAgICAgTWVhbiAgIDogMy4zMjYgICBNZWFuICAgOiAgOS44MzIgICBNZWFuICAgOjEuOTM4ICBcbiAzcmQgUXUuOjAuMDAxMTQ5MSAgICAgICAgICAzcmQgUXUuOjguODM3ZS0wNCAgICAgICAgICAgICAzcmQgUXUuOiA1LjAwMCAgIDNyZCBRdS46IDE0LjAwMCAgIDNyZCBRdS46Mi4wMDAgIFxuIE1heC4gICA6MC4wMTY0NTQ3ICAgICAgICAgIE1heC4gICA6Mi4zMDZlLTAyICAgICAgICAgICAgIE1heC4gICA6MTIuMDAwICAgTWF4LiAgIDo1NjIuMDAwICAgTWF4LiAgIDo5LjAwMCAgXG4ifQ== -->
+<pre><code>       X             PaperID             Year      PaperImportance_Degree AuthorDegreeCentrality_Max AuthorClosenessCentrality_Max
+ Min.   :     0   Min.   :   1001   Min.   :1992   Min.   :0.000e+00      Min.   :0.0000000          Min.   :0.000e+00            
+ 1st Qu.: 42140   1st Qu.:9212155   1st Qu.:1998   1st Qu.:3.732e-05      1st Qu.:0.0001441          1st Qu.:6.721e-05            
+ Median : 84281   Median :9502136   Median :2000   Median :1.493e-04      Median :0.0003830          Median :2.464e-04            
+ Mean   : 84281   Mean   :7936591   Mean   :2000   Mean   :5.159e-04      Mean   :0.0005775          Mean   :6.550e-04            
+ 3rd Qu.:126422   3rd Qu.:9704181   3rd Qu.:2002   3rd Qu.:4.682e-04      3rd Qu.:0.0008035          3rd Qu.:7.304e-04            
+ Max.   :168562   Max.   :9912293   Max.   :2003   Max.   :8.693e-02      Max.   :0.0067315          Max.   :1.027e-02            
+ AuthorDegreeCentrality_Sum AuthorClosenessCentrality_Sum   YearsToNow      ReferenceNum       AuthorNum    
+ Min.   :0.0000000          Min.   :0.000e+00             Min.   : 0.000   Min.   :  0.000   Min.   :1.000  
+ 1st Qu.:0.0002016          1st Qu.:6.721e-05             1st Qu.: 1.000   1st Qu.:  1.000   1st Qu.:1.000  
+ Median :0.0005439          Median :2.882e-04             Median : 3.000   Median :  5.000   Median :2.000  
+ Mean   :0.0008503          Mean   :8.134e-04             Mean   : 3.326   Mean   :  9.832   Mean   :1.938  
+ 3rd Qu.:0.0011491          3rd Qu.:8.837e-04             3rd Qu.: 5.000   3rd Qu.: 14.000   3rd Qu.:2.000  
+ Max.   :0.0164547          Max.   :2.306e-02             Max.   :12.000   Max.   :562.000   Max.   :9.000  </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgJT4lXG4gIG11dGF0ZShQYXBlcklEPWFzLmZhY3RvcihQYXBlcklEKSkgJT4lXG4gIGdyb3VwX2J5KFBhcGVySUQpICU+JVxuICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWVfTGFnMSA9IGxhZyhBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZSwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lXG4gIG11dGF0ZShBdXRob3JJbXBvcnRhbmNlX1N1bURlZ3JlZV9MYWcxID0gbGFnKEF1dGhvckltcG9ydGFuY2VfU3VtRGVncmVlLCBuPTEsIG9yZGVyX2J5PVllYXIpKSAtPlxuICBleHBlcmltZW50X2RhdGFcblxuc3VtbWFyeShleHBlcmltZW50X2RhdGEpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgJT4lXG4gIG11dGF0ZShQYXBlcklEPWFzLmZhY3RvcihQYXBlcklEKSkgJT4lXG4gIGdyb3VwX2J5KFBhcGVySUQpICU+JVxuICBtdXRhdGUoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSA9IGxhZyhBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lXG4gIG11dGF0ZShBdXRob3JEZWdyZWVDZW50cmFsaXR5X1N1bV9MYWcxID0gbGFnKEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtLCBuPTEsIG9yZGVyX2J5PVllYXIpKSAtPlxuICBleHBlcmltZW50X2RhdGFcblxuc3VtbWFyeShleHBlcmltZW50X2RhdGEpXG5gYGAifQ== -->
 <pre class="r"><code>df %&gt;%
   mutate(PaperID=as.factor(PaperID)) %&gt;%
   group_by(PaperID) %&gt;%
-  mutate(AuthorImportance_MaxDegree_Lag1 = lag(AuthorImportance_MaxDegree, n=1, order_by=Year)) %&gt;%
-  mutate(AuthorImportance_SumDegree_Lag1 = lag(AuthorImportance_SumDegree, n=1, order_by=Year)) -&gt;
+  mutate(AuthorDegreeCentrality_Max_Lag1 = lag(AuthorDegreeCentrality_Max, n=1, order_by=Year)) %&gt;%
+  mutate(AuthorDegreeCentrality_Sum_Lag1 = lag(AuthorDegreeCentrality_Sum, n=1, order_by=Year)) -&gt;
   experiment_data
 
 summary(experiment_data)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgIFggICAgICAgICAgICBQYXBlcklEICAgICAgICAgICBZZWFyICAgICAgUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSBQYXBlckltcG9ydGFuY2VfQmV0d2Vlbm5lc3MgQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWVcbiBNaW4uICAgOiAgICAwICAgOTIwMjA1MjogICAzNyAgIE1pbi4gICA6MTk5MyAgIE1pbi4gICA6MC4wMDBlKzAwICAgICAgTWluLiAgIDowLjAwMGUrMDAgICAgICAgICAgIE1pbi4gICA6MC4wMDAwMDAwICAgICAgICAgXG4gMXN0IFF1LjoxODA2NCAgIDkyMDYwNjA6ICAgMzMgICAxc3QgUXUuOjE5OTggICAxc3QgUXUuOjMuNjAxZS0wNSAgICAgIDFzdCBRdS46MC4wMDBlKzAwICAgICAgICAgICAxc3QgUXUuOjAuMDAwMDYxOCAgICAgICAgIFxuIE1lZGlhbiA6MzYxMjggICA5MzEwMTM2OiAgIDMzICAgTWVkaWFuIDoyMDAwICAgTWVkaWFuIDoxLjQxM2UtMDQgICAgICBNZWRpYW4gOjEuNTAwZS0wNyAgICAgICAgICAgTWVkaWFuIDowLjAwMDEwMzQgICAgICAgICBcbiBNZWFuICAgOjM2MTI4ICAgOTIxMTEwMjogICAzMSAgIE1lYW4gICA6MjAwMCAgIE1lYW4gICA6NC43NTFlLTA0ICAgICAgTWVhbiAgIDo0Ljc5NWUtMDUgICAgICAgICAgIE1lYW4gICA6MC4wMDAxODgyICAgICAgICAgXG4gM3JkIFF1Ljo1NDE5MSAgIDk0MDUwNDg6ICAgMzAgICAzcmQgUXUuOjIwMDIgICAzcmQgUXUuOjQuMjQwZS0wNCAgICAgIDNyZCBRdS46MS40MTdlLTA1ICAgICAgICAgICAzcmQgUXUuOjAuMDAwMjA2OCAgICAgICAgIFxuIE1heC4gICA6NzIyNTUgICA5MjEwMTU4OiAgIDI4ICAgTWF4LiAgIDoyMDAzICAgTWF4LiAgIDo4LjY5M2UtMDIgICAgICBNYXguICAgOjEuMDk5ZS0wMSAgICAgICAgICAgTWF4LiAgIDowLjAwNTYyODUgICAgICAgICBcbiAgICAgICAgICAgICAgICAgKE90aGVyKTo3MjA2NCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gQXV0aG9ySW1wb3J0YW5jZV9NYXhDbG9zZW5lc3MgQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWUgQXV0aG9ySW1wb3J0YW5jZV9TdW1DbG9zZW5lc3MgICBZZWFyc1RvTm93ICAgICAgUmVmZXJlbmNlTnVtICAgICAgIEF1dGhvck51bSAgICBcbiBNaW4uICAgOjAuMDAwZSswMCAgICAgICAgICAgICBNaW4uICAgOjAuMDAwMDAwMCAgICAgICAgICBNaW4uICAgOjAuMDAwZSswMCAgICAgICAgICAgICBNaW4uICAgOiAwLjAwMCAgIE1pbi4gICA6ICAwLjAwMCAgIE1pbi4gICA6MS4wMDAgIFxuIDFzdCBRdS46MC4wMDBlKzAwICAgICAgICAgICAgIDFzdCBRdS46MC4wMDAwNjE4ICAgICAgICAgIDFzdCBRdS46MC4wMDBlKzAwICAgICAgICAgICAgIDFzdCBRdS46IDEuMDAwICAgMXN0IFF1LjogIDEuMDAwICAgMXN0IFF1LjoyLjAwMCAgXG4gTWVkaWFuIDo2LjA2NWUtMDUgICAgICAgICAgICAgTWVkaWFuIDowLjAwMDEzNDQgICAgICAgICAgTWVkaWFuIDo2LjA2NWUtMDUgICAgICAgICAgICAgTWVkaWFuIDogMi4wMDAgICBNZWRpYW4gOiAgNC4wMDAgICBNZWRpYW4gOjIuMDAwICBcbiBNZWFuICAgOjEuOTYxZS0wNCAgICAgICAgICAgICBNZWFuICAgOjAuMDAwMjU4OCAgICAgICAgICBNZWFuICAgOjIuMTIwZS0wNCAgICAgICAgICAgICBNZWFuICAgOiAzLjAzOCAgIE1lYW4gICA6ICA4Ljc5NSAgIE1lYW4gICA6Mi4yNTkgIFxuIDNyZCBRdS46MS44MzhlLTA0ICAgICAgICAgICAgIDNyZCBRdS46MC4wMDAzMDMyICAgICAgICAgIDNyZCBRdS46MS44NTRlLTA0ICAgICAgICAgICAgIDNyZCBRdS46IDUuMDAwICAgM3JkIFF1LjogMTIuMDAwICAgM3JkIFF1LjozLjAwMCAgXG4gTWF4LiAgIDoxLjAyN2UtMDIgICAgICAgICAgICAgTWF4LiAgIDowLjAwOTc1NjEgICAgICAgICAgTWF4LiAgIDoxLjE0OWUtMDIgICAgICAgICAgICAgTWF4LiAgIDoxMS4wMDAgICBNYXguICAgOjU2Mi4wMDAgICBNYXguICAgOjguMDAwICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIEF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEgQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWVfTGFnMVxuIE1pbi4gICA6MC4wMDAgICAgICAgICAgICAgICAgICAgTWluLiAgIDowLjAwICAgICAgICAgICAgICAgICAgIFxuIDFzdCBRdS46MC4wMDAgICAgICAgICAgICAgICAgICAgMXN0IFF1LjowLjAwICAgICAgICAgICAgICAgICAgIFxuIE1lZGlhbiA6MC4wMDAgICAgICAgICAgICAgICAgICAgTWVkaWFuIDowLjAwICAgICAgICAgICAgICAgICAgIFxuIE1lYW4gICA6MC4wMDAgICAgICAgICAgICAgICAgICAgTWVhbiAgIDowLjAwICAgICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46MC4wMDAgICAgICAgICAgICAgICAgICAgM3JkIFF1LjowLjAwICAgICAgICAgICAgICAgICAgIFxuIE1heC4gICA6MC4wMDYgICAgICAgICAgICAgICAgICAgTWF4LiAgIDowLjAxICAgICAgICAgICAgICAgICAgIFxuIE5BJ3MgICA6MTM3NzggICAgICAgICAgICAgICAgICAgTkEncyAgIDoxMzc3OCAgICAgICAgICAgICAgICAgIFxuIn0= -->
-<pre><code>       X            PaperID           Year      PaperImportance_Degree PaperImportance_Betweenness AuthorImportance_MaxDegree
- Min.   :    0   9202052:   37   Min.   :1993   Min.   :0.000e+00      Min.   :0.000e+00           Min.   :0.0000000         
- 1st Qu.:18064   9206060:   33   1st Qu.:1998   1st Qu.:3.601e-05      1st Qu.:0.000e+00           1st Qu.:0.0000618         
- Median :36128   9310136:   33   Median :2000   Median :1.413e-04      Median :1.500e-07           Median :0.0001034         
- Mean   :36128   9211102:   31   Mean   :2000   Mean   :4.751e-04      Mean   :4.795e-05           Mean   :0.0001882         
- 3rd Qu.:54191   9405048:   30   3rd Qu.:2002   3rd Qu.:4.240e-04      3rd Qu.:1.417e-05           3rd Qu.:0.0002068         
- Max.   :72255   9210158:   28   Max.   :2003   Max.   :8.693e-02      Max.   :1.099e-01           Max.   :0.0056285         
-                 (Other):72064                                                                                               
- AuthorImportance_MaxCloseness AuthorImportance_SumDegree AuthorImportance_SumCloseness   YearsToNow      ReferenceNum       AuthorNum    
- Min.   :0.000e+00             Min.   :0.0000000          Min.   :0.000e+00             Min.   : 0.000   Min.   :  0.000   Min.   :1.000  
- 1st Qu.:0.000e+00             1st Qu.:0.0000618          1st Qu.:0.000e+00             1st Qu.: 1.000   1st Qu.:  1.000   1st Qu.:2.000  
- Median :6.065e-05             Median :0.0001344          Median :6.065e-05             Median : 2.000   Median :  4.000   Median :2.000  
- Mean   :1.961e-04             Mean   :0.0002588          Mean   :2.120e-04             Mean   : 3.038   Mean   :  8.795   Mean   :2.259  
- 3rd Qu.:1.838e-04             3rd Qu.:0.0003032          3rd Qu.:1.854e-04             3rd Qu.: 5.000   3rd Qu.: 12.000   3rd Qu.:3.000  
- Max.   :1.027e-02             Max.   :0.0097561          Max.   :1.149e-02             Max.   :11.000   Max.   :562.000   Max.   :8.000  
-                                                                                                                                          
- AuthorImportance_MaxDegree_Lag1 AuthorImportance_SumDegree_Lag1
- Min.   :0.000                   Min.   :0.00                   
- 1st Qu.:0.000                   1st Qu.:0.00                   
- Median :0.000                   Median :0.00                   
- Mean   :0.000                   Mean   :0.00                   
- 3rd Qu.:0.000                   3rd Qu.:0.00                   
- Max.   :0.006                   Max.   :0.01                   
- NA&#39;s   :13778                   NA&#39;s   :13778                  </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXJcblxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpXG5cbmV4cGVyaW1lbnRfZGF0YSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxubW9kZWwgPC0gZmVsbShmLCBkYXRhKVxuc3VtbWFyeShtb2RlbClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXJcblxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpXG5cbmV4cGVyaW1lbnRfZGF0YSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxubW9kZWwgPC0gZmVsbShmLCBkYXRhKVxuc3VtbWFyeShtb2RlbClcbnByaW50KG5yb3coZGF0YSkpXG5gYGAifQ== -->
 <pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorImportance_MaxDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
 
 col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorImportance_MaxDegree&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;ActorNum&#39;, &#39;Year&#39;)
@@ -1823,44 +1843,15 @@ experiment_data %&gt;%
   data
 
 model &lt;- felm(f, data)
-summary(model)</code></pre>
+summary(model)
+print(nrow(data))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuICAgZmVsbShmb3JtdWxhID0gZiwgZGF0YSA9IGRhdGEpIFxuXG5SZXNpZHVhbHM6XG4gICAgICBNaW4gICAgICAgIDFRICAgIE1lZGlhbiAgICAgICAgM1EgICAgICAgTWF4IFxuLTAuMDA2MTk2IC0wLjAwMDM3NCAtMC4wMDAxNDcgIDAuMDAwMTAyICAwLjA4NDQ1MCBcblxuQ29lZmZpY2llbnRzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHQgdmFsdWUgUHIoPnx0fCkgICAgXG5BdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZSAgMS43NTllKzAwICAyLjk5NGUtMDIgIDU4LjczOSAgPCAyZS0xNiAqKipcblllYXJzVG9Ob3cgICAgICAgICAgICAgICAgICA4LjQ0MGUtMDUgIDMuMDk3ZS0wNiAgMjcuMjUyICA8IDJlLTE2ICoqKlxuUmVmZXJlbmNlTnVtICAgICAgICAgICAgICAgIDIuOTY5ZS0wNSAgNS41NjdlLTA3ICA1My4zNDEgIDwgMmUtMTYgKioqXG5BdXRob3JOdW0gICAgICAgICAgICAgICAgICAtMy4yMDZlLTA1ICA2LjYxOWUtMDYgIC00Ljg0NCAxLjI3ZS0wNiAqKipcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAg4oCYKioq4oCZIDAuMDAxIOKAmCoq4oCZIDAuMDEg4oCYKuKAmSAwLjA1IOKAmC7igJkgMC4xIOKAmCDigJkgMVxuXG5SZXNpZHVhbCBzdGFuZGFyZCBlcnJvcjogMC4wMDE1ODUgb24gNTg0NjMgZGVncmVlcyBvZiBmcmVlZG9tXG5NdWx0aXBsZSBSLXNxdWFyZWQoZnVsbCBtb2RlbCk6IDAuMTE1OCAgIEFkanVzdGVkIFItc3F1YXJlZDogMC4xMTU2IFxuTXVsdGlwbGUgUi1zcXVhcmVkKHByb2ogbW9kZWwpOiAwLjExNSAgIEFkanVzdGVkIFItc3F1YXJlZDogMC4xMTQ4IFxuRi1zdGF0aXN0aWMoZnVsbCBtb2RlbCk6NTQ3LjEgb24gMTQgYW5kIDU4NDYzIERGLCBwLXZhbHVlOiA8IDIuMmUtMTYgXG5GLXN0YXRpc3RpYyhwcm9qIG1vZGVsKTogIDE5MDAgb24gNCBhbmQgNTg0NjMgREYsIHAtdmFsdWU6IDwgMi4yZS0xNiBcbiJ9 -->
-<pre><code>
-Call:
-   felm(formula = f, data = data) 
-
-Residuals:
-      Min        1Q    Median        3Q       Max 
--0.006196 -0.000374 -0.000147  0.000102  0.084450 
-
-Coefficients:
-                             Estimate Std. Error t value Pr(&gt;|t|)    
-AuthorImportance_MaxDegree  1.759e+00  2.994e-02  58.739  &lt; 2e-16 ***
-YearsToNow                  8.440e-05  3.097e-06  27.252  &lt; 2e-16 ***
-ReferenceNum                2.969e-05  5.567e-07  53.341  &lt; 2e-16 ***
-AuthorNum                  -3.206e-05  6.619e-06  -4.844 1.27e-06 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 0.001585 on 58463 degrees of freedom
-Multiple R-squared(full model): 0.1158   Adjusted R-squared: 0.1156 
-Multiple R-squared(proj model): 0.115   Adjusted R-squared: 0.1148 
-F-statistic(full model):547.1 on 14 and 58463 DF, p-value: &lt; 2.2e-16 
-F-statistic(proj model):  1900 on 4 and 58463 DF, p-value: &lt; 2.2e-16 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQobnJvdyhkYXRhKSlcbmBgYCJ9 -->
-<pre class="r"><code>print(nrow(data))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDU4NDc4XG4ifQ== -->
-<pre><code>[1] 58478</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Endogeneity check</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWVfTGFnMSArIFllYXJzVG9Ob3cgKyBSZWZlcmVuY2VOdW0gKyBBdXRob3JOdW0gIHwgWWVhclxuXG5jb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZV9MYWcxJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0FjdG9yTnVtJywgJ1llYXInKVxuXG5leHBlcmltZW50X2RhdGEgJT4lXG4gIG5hLm9taXQoKSAtPlxuICBkYXRhXG5cbm1vZGVsIDwtIGZlbG0oZiwgZGF0YSlcbnN1bW1hcnkobW9kZWwpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWVfTGFnMSArIFllYXJzVG9Ob3cgKyBSZWZlcmVuY2VOdW0gKyBBdXRob3JOdW0gIHwgWWVhclxuXG5jb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZV9MYWcxJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0FjdG9yTnVtJywgJ1llYXInKVxuXG5leHBlcmltZW50X2RhdGEgJT4lXG4gIG5hLm9taXQoKSAtPlxuICBkYXRhXG5cbm1vZGVsIDwtIGZlbG0oZiwgZGF0YSlcbnN1bW1hcnkobW9kZWwpXG5cbmBgYCJ9 -->
 <pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorImportance_MaxDegree_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
 
 col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorImportance_MaxDegree_Lag1&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;ActorNum&#39;, &#39;Year&#39;)
@@ -1870,32 +1861,9 @@ experiment_data %&gt;%
   data
 
 model &lt;- felm(f, data)
-summary(model)</code></pre>
+summary(model)
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuICAgZmVsbShmb3JtdWxhID0gZiwgZGF0YSA9IGRhdGEpIFxuXG5SZXNpZHVhbHM6XG4gICAgICBNaW4gICAgICAgIDFRICAgIE1lZGlhbiAgICAgICAgM1EgICAgICAgTWF4IFxuLTAuMDA2OTU3IC0wLjAwMDM3OCAtMC4wMDAxNTQgIDAuMDAwMDkzICAwLjA4NDUwNCBcblxuQ29lZmZpY2llbnRzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEVzdGltYXRlIFN0ZC4gRXJyb3IgdCB2YWx1ZSBQcig+fHR8KSAgICBcbkF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEgIDEuNDY2ZSswMCAgMi43MTdlLTAyICA1My45MzMgIDwgMmUtMTYgKioqXG5ZZWFyc1RvTm93ICAgICAgICAgICAgICAgICAgICAgICA4LjM1MGUtMDUgIDMuMTEyZS0wNiAgMjYuODM1ICA8IDJlLTE2ICoqKlxuUmVmZXJlbmNlTnVtICAgICAgICAgICAgICAgICAgICAgMy4wNDRlLTA1ICA1LjU4MmUtMDcgIDU0LjUzNCAgPCAyZS0xNiAqKipcbkF1dGhvck51bSAgICAgICAgICAgICAgICAgICAgICAgLTMuNDI0ZS0wNSAgNi43MDNlLTA2ICAtNS4xMDkgMy4yNWUtMDcgKioqXG4tLS1cblNpZ25pZi4gY29kZXM6ICAwIOKAmCoqKuKAmSAwLjAwMSDigJgqKuKAmSAwLjAxIOKAmCrigJkgMC4wNSDigJgu4oCZIDAuMSDigJgg4oCZIDFcblxuUmVzaWR1YWwgc3RhbmRhcmQgZXJyb3I6IDAuMDAxNTkyIG9uIDU4NDYzIGRlZ3JlZXMgb2YgZnJlZWRvbVxuTXVsdGlwbGUgUi1zcXVhcmVkKGZ1bGwgbW9kZWwpOiAwLjEwOCAgIEFkanVzdGVkIFItc3F1YXJlZDogMC4xMDc4IFxuTXVsdGlwbGUgUi1zcXVhcmVkKHByb2ogbW9kZWwpOiAwLjEwNzIgICBBZGp1c3RlZCBSLXNxdWFyZWQ6IDAuMTA3IFxuRi1zdGF0aXN0aWMoZnVsbCBtb2RlbCk6NTA1Ljcgb24gMTQgYW5kIDU4NDYzIERGLCBwLXZhbHVlOiA8IDIuMmUtMTYgXG5GLXN0YXRpc3RpYyhwcm9qIG1vZGVsKTogIDE3NTYgb24gNCBhbmQgNTg0NjMgREYsIHAtdmFsdWU6IDwgMi4yZS0xNiBcbiJ9 -->
-<pre><code>
-Call:
-   felm(formula = f, data = data) 
-
-Residuals:
-      Min        1Q    Median        3Q       Max 
--0.006957 -0.000378 -0.000154  0.000093  0.084504 
-
-Coefficients:
-                                  Estimate Std. Error t value Pr(&gt;|t|)    
-AuthorImportance_MaxDegree_Lag1  1.466e+00  2.717e-02  53.933  &lt; 2e-16 ***
-YearsToNow                       8.350e-05  3.112e-06  26.835  &lt; 2e-16 ***
-ReferenceNum                     3.044e-05  5.582e-07  54.534  &lt; 2e-16 ***
-AuthorNum                       -3.424e-05  6.703e-06  -5.109 3.25e-07 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 0.001592 on 58463 degrees of freedom
-Multiple R-squared(full model): 0.108   Adjusted R-squared: 0.1078 
-Multiple R-squared(proj model): 0.1072   Adjusted R-squared: 0.107 
-F-statistic(full model):505.7 on 14 and 58463 DF, p-value: &lt; 2.2e-16 
-F-statistic(proj model):  1756 on 4 and 58463 DF, p-value: &lt; 2.2e-16 </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>robutstness check</p>
@@ -1913,35 +1881,11 @@ experiment_data %&gt;%
 model &lt;- felm(f, data)
 summary(model)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuICAgZmVsbShmb3JtdWxhID0gZiwgZGF0YSA9IGRhdGEpIFxuXG5SZXNpZHVhbHM6XG4gICAgICBNaW4gICAgICAgIDFRICAgIE1lZGlhbiAgICAgICAgM1EgICAgICAgTWF4IFxuLTAuMDA2NTY3IC0wLjAwMDM4MSAtMC4wMDAxNTcgIDAuMDAwMDkyICAwLjA4NDU5MSBcblxuQ29lZmZpY2llbnRzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHQgdmFsdWUgUHIoPnx0fCkgICAgXG5BdXRob3JJbXBvcnRhbmNlX1N1bURlZ3JlZSAgMS4xODJlKzAwICAyLjE0MmUtMDIgIDU1LjE4NyAgIDwyZS0xNiAqKipcblllYXJzVG9Ob3cgICAgICAgICAgICAgICAgICA4LjY5MGUtMDUgIDMuMTA2ZS0wNiAgMjcuOTc0ICAgPDJlLTE2ICoqKlxuUmVmZXJlbmNlTnVtICAgICAgICAgICAgICAgIDMuMTE3ZS0wNSAgNS41NjBlLTA3ICA1Ni4wNjIgICA8MmUtMTYgKioqXG5BdXRob3JOdW0gICAgICAgICAgICAgICAgICAtNi40ODBlLTA1ICA2Ljg2NWUtMDYgIC05LjQzOSAgIDwyZS0xNiAqKipcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAg4oCYKioq4oCZIDAuMDAxIOKAmCoq4oCZIDAuMDEg4oCYKuKAmSAwLjA1IOKAmC7igJkgMC4xIOKAmCDigJkgMVxuXG5SZXNpZHVhbCBzdGFuZGFyZCBlcnJvcjogMC4wMDE1OTEgb24gNTg0NjMgZGVncmVlcyBvZiBmcmVlZG9tXG5NdWx0aXBsZSBSLXNxdWFyZWQoZnVsbCBtb2RlbCk6ICAwLjExICAgQWRqdXN0ZWQgUi1zcXVhcmVkOiAwLjEwOTggXG5NdWx0aXBsZSBSLXNxdWFyZWQocHJvaiBtb2RlbCk6IDAuMTA5MiAgIEFkanVzdGVkIFItc3F1YXJlZDogMC4xMDkgXG5GLXN0YXRpc3RpYyhmdWxsIG1vZGVsKTo1MTYuMiBvbiAxNCBhbmQgNTg0NjMgREYsIHAtdmFsdWU6IDwgMi4yZS0xNiBcbkYtc3RhdGlzdGljKHByb2ogbW9kZWwpOiAgMTc5MiBvbiA0IGFuZCA1ODQ2MyBERiwgcC12YWx1ZTogPCAyLjJlLTE2IFxuIn0= -->
-<pre><code>
-Call:
-   felm(formula = f, data = data) 
-
-Residuals:
-      Min        1Q    Median        3Q       Max 
--0.006567 -0.000381 -0.000157  0.000092  0.084591 
-
-Coefficients:
-                             Estimate Std. Error t value Pr(&gt;|t|)    
-AuthorImportance_SumDegree  1.182e+00  2.142e-02  55.187   &lt;2e-16 ***
-YearsToNow                  8.690e-05  3.106e-06  27.974   &lt;2e-16 ***
-ReferenceNum                3.117e-05  5.560e-07  56.062   &lt;2e-16 ***
-AuthorNum                  -6.480e-05  6.865e-06  -9.439   &lt;2e-16 ***
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Residual standard error: 0.001591 on 58463 degrees of freedom
-Multiple R-squared(full model):  0.11   Adjusted R-squared: 0.1098 
-Multiple R-squared(proj model): 0.1092   Adjusted R-squared: 0.109 
-F-statistic(full model):516.2 on 14 and 58463 DF, p-value: &lt; 2.2e-16 
-F-statistic(proj model):  1792 on 4 and 58463 DF, p-value: &lt; 2.2e-16 </code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KYGBge3J9DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KHBzeWNoKQ0KbGlicmFyeShsZmUpDQpgYGANCmBgYHtyfQ0KZGYgPC0gcmVhZC5jc3YoIi4vRGF0YS9DaXRhdGlvbi5jc3YiKQ0KbnJvdyhkZikNCmBgYA0KDQpgYGB7cn0NCmRmICU+JQ0KICBtdXRhdGUoUGFwZXJJRD1hcy5mYWN0b3IoUGFwZXJJRCkpICU+JQ0KICBncm91cF9ieShQYXBlcklEKSAlPiUNCiAgbXV0YXRlKEF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEgPSBsYWcoQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUsIG49MSwgb3JkZXJfYnk9WWVhcikpICU+JQ0KICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWVfTGFnMSA9IGxhZyhBdXRob3JJbXBvcnRhbmNlX1N1bURlZ3JlZSwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgLT4NCiAgZXhwZXJpbWVudF9kYXRhDQoNCnN1bW1hcnkoZXhwZXJpbWVudF9kYXRhKQ0KYGBgDQoNCg0KYGBge3J9DQpmIDwtIFBhcGVySW1wb3J0YW5jZV9EZWdyZWUgfiBBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZSArIFllYXJzVG9Ob3cgKyBSZWZlcmVuY2VOdW0gKyBBdXRob3JOdW0gIHwgWWVhcg0KDQpjb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZScsICdZZWFyc1RvTm93JywgJ1JlZmVyZW5jZU51bScsICdBY3Rvck51bScsICdZZWFyJykNCg0KZXhwZXJpbWVudF9kYXRhICU+JQ0KICBuYS5vbWl0KCkgLT4NCiAgZGF0YQ0KDQptb2RlbCA8LSBmZWxtKGYsIGRhdGEpDQpzdW1tYXJ5KG1vZGVsKQ0KcHJpbnQobnJvdyhkYXRhKSkNCmBgYA0KDQpFbmRvZ2VuZWl0eSBjaGVjaw0KYGBge3J9DQpmIDwtIFBhcGVySW1wb3J0YW5jZV9EZWdyZWUgfiBBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZV9MYWcxICsgWWVhcnNUb05vdyArIFJlZmVyZW5jZU51bSArIEF1dGhvck51bSAgfCBZZWFyDQoNCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpDQoNCmV4cGVyaW1lbnRfZGF0YSAlPiUNCiAgbmEub21pdCgpIC0+DQogIGRhdGENCg0KbW9kZWwgPC0gZmVsbShmLCBkYXRhKQ0Kc3VtbWFyeShtb2RlbCkNCg0KYGBgDQoNCnJvYnV0c3RuZXNzIGNoZWNrDQpgYGB7cn0NCmYgPC0gUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSB+IEF1dGhvckltcG9ydGFuY2VfU3VtRGVncmVlICsgWWVhcnNUb05vdyArIFJlZmVyZW5jZU51bSArIEF1dGhvck51bSAgfCBZZWFyDQoNCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckltcG9ydGFuY2VfU3VtRGVncmVlJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0FjdG9yTnVtJywgJ1llYXInKQ0KDQpleHBlcmltZW50X2RhdGEgJT4lDQogIG5hLm9taXQoKSAtPg0KICBkYXRhDQoNCm1vZGVsIDwtIGZlbG0oZiwgZGF0YSkNCnN1bW1hcnkobW9kZWwpDQpgYGANCg0KDQoNCg0K</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoZHBseXIpCmxpYnJhcnkocHN5Y2gpCmxpYnJhcnkobGZlKQpgYGAKYGBge3J9CmRmIDwtIHJlYWQuY3N2KCIuL0RhdGEvQ2l0YXRpb24uY3N2IikKc3VtbWFyeShkZikKYGBgCgpgYGB7cn0KZGYgJT4lCiAgbXV0YXRlKFBhcGVySUQ9YXMuZmFjdG9yKFBhcGVySUQpKSAlPiUKICBncm91cF9ieShQYXBlcklEKSAlPiUKICBtdXRhdGUoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSA9IGxhZyhBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lCiAgbXV0YXRlKEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtX0xhZzEgPSBsYWcoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9TdW0sIG49MSwgb3JkZXJfYnk9WWVhcikpIC0+CiAgZXhwZXJpbWVudF9kYXRhCgpzdW1tYXJ5KGV4cGVyaW1lbnRfZGF0YSkKYGBgCgoKYGBge3J9CmYgPC0gUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSB+IEF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlICsgWWVhcnNUb05vdyArIFJlZmVyZW5jZU51bSArIEF1dGhvck51bSAgfCBZZWFyCgpjb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZScsICdZZWFyc1RvTm93JywgJ1JlZmVyZW5jZU51bScsICdBY3Rvck51bScsICdZZWFyJykKCmV4cGVyaW1lbnRfZGF0YSAlPiUKICBuYS5vbWl0KCkgLT4KICBkYXRhCgptb2RlbCA8LSBmZWxtKGYsIGRhdGEpCnN1bW1hcnkobW9kZWwpCnByaW50KG5yb3coZGF0YSkpCmBgYAoKRW5kb2dlbmVpdHkgY2hlY2sKYGBge3J9CmYgPC0gUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSB+IEF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXIKCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpCgpleHBlcmltZW50X2RhdGEgJT4lCiAgbmEub21pdCgpIC0+CiAgZGF0YQoKbW9kZWwgPC0gZmVsbShmLCBkYXRhKQpzdW1tYXJ5KG1vZGVsKQoKYGBgCgpyb2J1dHN0bmVzcyBjaGVjawpgYGB7cn0KZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWUgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXIKCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckltcG9ydGFuY2VfU3VtRGVncmVlJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0FjdG9yTnVtJywgJ1llYXInKQoKZXhwZXJpbWVudF9kYXRhICU+JQogIG5hLm9taXQoKSAtPgogIGRhdGEKCm1vZGVsIDwtIGZlbG0oZiwgZGF0YSkKc3VtbWFyeShtb2RlbCkKYGBgCgoKCgo=</div>
 
 
 

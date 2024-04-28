@@ -91,8 +91,8 @@ def NewCleanStep2():
 
 if __name__ == "__main__":
     
-    #BuildCitationGraphDF()
-    #BuildMiscInfoDF()
+    BuildCitationGraphDF()
+    BuildMiscInfoDF()
     BuildCoauthorGraphDF()
     #LoadDF()
     
