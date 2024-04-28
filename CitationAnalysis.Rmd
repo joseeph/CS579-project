@@ -1,0 +1,30 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+library(dplyr)
+library(psych)
+library(lfe)
+```
+```{r}
+df <- read.csv("./Data/Citation.csv")
+
+```
+
+```{r}
+df %>%
+  mutate(PaperID=as.factor(PaperID)) ->
+  df
+
+summary(df)
+```
+
+
+```{r}
+f <- PaperImportance_Degree ~ AuthorImportance_MaxDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+model <- felm(f, df)
+summary(model)
+```
