@@ -83,9 +83,30 @@ class CitationNetworkBuilder:
         UtilFuncs.PickleWrite(df, output_path)
         
 
-        #pd.DataFrame()
-        pass
+    def GenGraphs(self, data_container :NodeContainer):
+        paper_map = data_container.GetAllNodesByType("CitationPaperNode")
 
+        graph_dict = {}
+
+        from_year = 1992
+        to_year = 2003
+        # from 1993 to 2003
+        for cur_year in range(from_year, to_year + 1):
+            citation_graph = nx.DiGraph()
+
+            paper_node :CitationPaperNode = None
+            for paper_id in paper_map:
+                # add this paper's ID
+                paper_node = paper_map[paper_id]
+                if paper_node.Dt.year <= cur_year:
+                    citation_graph.add_node(paper_node.ID)
+                    for citation_paperid in paper_node.ReferenceIDs:
+                        citation_paper :CitationPaperNode = data_container.FindNodeWithType("CitationPaperNode", citation_paperid)
+                        if citation_paper.Dt.year <= cur_year:
+                            citation_graph.add_node(citation_paperid)
+                            citation_graph.add_edge(paper_node.ID, citation_paperid)
+            graph_dict[cur_year] = citation_graph
+        return graph_dict
 
         
         

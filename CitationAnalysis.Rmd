@@ -1,7 +1,9 @@
 ---
-title: "R Notebook"
+title: "Paper Citation Analysis"
 output: html_notebook
 ---
+
+## Load Data
 ```{r}
 library(tidyverse)
 library(dplyr)
@@ -22,12 +24,29 @@ df %>%
   ungroup() %>%
   mutate(AuthorImportance_MaxDegree=AuthorDegreeCentrality_Max) %>%
   mutate(AuthorImportance_MaxCloseness=AuthorClosenessCentrality_Max) %>%
-  mutate(AuthorImportance_SumDegree=)
+  mutate(AuthorImportance_SumDegree=AuthorDegreeCentrality_Sum ) %>%
+  mutate(AuthorImportance_SumCloseness=AuthorClosenessCentrality_Sum ) ->
   experiment_data
 
 summary(experiment_data)
 ```
 
+Correlation matrix
+```{r}
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max', 'YearsToNow', 'ReferenceNum', 'AuthorNum')
+
+experiment_data %>%
+  select(col_names) %>%
+  na.omit() ->
+  data
+
+cor(data)
+```
+```{r}
+sd(data$AuthorNum)
+```
+
+## Baseline Regression
 
 ```{r}
 f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Max + YearsToNow + ReferenceNum + AuthorNum  | Year
@@ -44,46 +63,41 @@ summary(model)
 print(nrow(data))
 ```
 
+
+
+
+
+## Robutstness check
 ```{r}
-col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max', 'YearsToNow', 'ReferenceNum', 'AuthorNum')
+f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Sum + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Sum', 'YearsToNow', 'ReferenceNum', 'AuthorNum', 'Year')
+
+experiment_data %>%
+  select(col_names ) %>%
+  na.omit() ->
+  data
+
+model <- felm(f, data)
+summary(model)
+
+print(nrow(data))
+```
+
+## Endogeneity check
+```{r}
+f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Max_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max_Lag1', 'YearsToNow', 'ReferenceNum', 'AuthorNum', 'Year')
 
 experiment_data %>%
   select(col_names) %>%
   na.omit() ->
   data
 
-cor(data)
-```
-
-Endogeneity check
-```{r}
-f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Max_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
-
-col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max_Lag1', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
-
-experiment_data %>%
-  na.omit() ->
-  data
-
 model <- felm(f, data)
 summary(model)
-
+print(nrow(data))
 ```
-
-robutstness check
-```{r}
-f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Sum + YearsToNow + ReferenceNum + AuthorNum  | Year
-
-col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Sum', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
-
-experiment_data %>%
-  na.omit() ->
-  data
-
-model <- felm(f, data)
-summary(model)
-```
-
-
 
 

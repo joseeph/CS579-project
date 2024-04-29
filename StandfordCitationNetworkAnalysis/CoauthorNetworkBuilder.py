@@ -165,3 +165,34 @@ class CoauthorNetworkBuilder:
 
         #pd.DataFrame()
         pass 
+
+
+    def GenGraphs(self, data_container :NodeContainer):
+        paper_map = data_container.GetAllNodesByType("CitationPaperNode")
+
+        graph_dict = {}
+
+        from_year = 1992
+        to_year = 2003
+        # from 1992 to 2003
+        for cur_year in range(from_year, to_year + 1):
+            # the coauthor grpah is directional graph
+            coauthor_graph = nx.DiGraph()
+            #paper_name_dict = {}
+            paper_node :CitationPaperNode = None
+            for paper_id in paper_map:
+                # add this paper's ID
+                paper_node = paper_map[paper_id]
+                if paper_node.Dt.year <= cur_year:
+                    # first author
+                    first_author = paper_node.AuthorNames[0]
+                    coauthor_graph.add_node(first_author)
+    
+                    if len(paper_node.AuthorNames)>1:
+                        for coauthor_name in paper_node.AuthorNames[1:]:
+
+                            coauthor_graph.add_node(coauthor_name)
+                            coauthor_graph.add_edge(coauthor_name, first_author)
+
+            graph_dict[cur_year] = coauthor_graph
+        return graph_dict
