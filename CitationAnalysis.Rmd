@@ -18,7 +18,11 @@ df %>%
   mutate(PaperID=as.factor(PaperID)) %>%
   group_by(PaperID) %>%
   mutate(AuthorDegreeCentrality_Max_Lag1 = lag(AuthorDegreeCentrality_Max, n=1, order_by=Year)) %>%
-  mutate(AuthorDegreeCentrality_Sum_Lag1 = lag(AuthorDegreeCentrality_Sum, n=1, order_by=Year)) ->
+  mutate(AuthorDegreeCentrality_Sum_Lag1 = lag(AuthorDegreeCentrality_Sum, n=1, order_by=Year)) %>%
+  ungroup() %>%
+  mutate(AuthorImportance_MaxDegree=AuthorDegreeCentrality_Max) %>%
+  mutate(AuthorImportance_MaxCloseness=AuthorClosenessCentrality_Max) %>%
+  mutate(AuthorImportance_SumDegree=)
   experiment_data
 
 summary(experiment_data)
@@ -26,11 +30,12 @@ summary(experiment_data)
 
 
 ```{r}
-f <- PaperImportance_Degree ~ AuthorImportance_MaxDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
+f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Max + YearsToNow + ReferenceNum + AuthorNum  | Year
 
-col_names <- c('PaperImportance_Degree', 'AuthorImportance_MaxDegree', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max', 'YearsToNow', 'ReferenceNum', 'AuthorNum', 'Year')
 
 experiment_data %>%
+  select(col_names) %>%
   na.omit() ->
   data
 
@@ -39,11 +44,22 @@ summary(model)
 print(nrow(data))
 ```
 
+```{r}
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max', 'YearsToNow', 'ReferenceNum', 'AuthorNum')
+
+experiment_data %>%
+  select(col_names) %>%
+  na.omit() ->
+  data
+
+cor(data)
+```
+
 Endogeneity check
 ```{r}
-f <- PaperImportance_Degree ~ AuthorImportance_MaxDegree_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
+f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Max_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
 
-col_names <- c('PaperImportance_Degree', 'AuthorImportance_MaxDegree_Lag1', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Max_Lag1', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
 
 experiment_data %>%
   na.omit() ->
@@ -56,9 +72,9 @@ summary(model)
 
 robutstness check
 ```{r}
-f <- PaperImportance_Degree ~ AuthorImportance_SumDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
+f <- PaperImportance_Degree ~ AuthorDegreeCentrality_Sum + YearsToNow + ReferenceNum + AuthorNum  | Year
 
-col_names <- c('PaperImportance_Degree', 'AuthorImportance_SumDegree', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
+col_names <- c('PaperImportance_Degree', 'AuthorDegreeCentrality_Sum', 'YearsToNow', 'ReferenceNum', 'ActorNum', 'Year')
 
 experiment_data %>%
   na.omit() ->
