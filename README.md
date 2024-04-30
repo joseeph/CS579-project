@@ -17,5 +17,6 @@ IIT CS579 "Online Social Network Analysis" Class Project 2
   * Output: ./Data/Citation.csv
 * Step 4 Perform linear regression
   * CitationAnalysis.Rmd
-
+* Step 5 visualize graph
+  * NetworkVisualization.ipynb
 
