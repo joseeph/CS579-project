@@ -8,7 +8,6 @@ IIT CS579 "Online Social Network Analysis" Class Project 2
   * Output: ./Data/CitationCleaned.dat
 * Step 2 Build the network and extract information from it to create dataframes
   * Proj2BuildNetwork.py
-  * BuildDataset.ipynb
   * Output: 
     * ./Data/CitationGraphDF.dat
     * ./Data/MiscInfoDF.dat
@@ -18,5 +17,5 @@ IIT CS579 "Online Social Network Analysis" Class Project 2
   * Output: ./Data/Citation.csv
 * Step 4 Perform linear regression
   * CitationAnalysis.Rmd
-* 
+
 
