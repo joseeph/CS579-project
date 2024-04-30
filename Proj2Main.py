@@ -94,6 +94,5 @@ if __name__ == "__main__":
     BuildCitationGraphDF()
     BuildMiscInfoDF()
     BuildCoauthorGraphDF()
-    #LoadDF()
     
     pass

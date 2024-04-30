@@ -11,7 +11,7 @@
 
 
 
-<title>R Notebook</title>
+<title>Paper Citation Analysis</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1499,6 +1499,8 @@ window.initializeCodeFolding = function(show) {
   // select all R code blocks
   var rCodeBlocks = $('pre.r, pre.python, pre.bash, pre.sql, pre.cpp, pre.stan, pre.julia, pre.foldable');
   rCodeBlocks.each(function() {
+    // skip if the block has fold-none class
+    if ($(this).hasClass('fold-none')) return;
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
@@ -1509,12 +1511,14 @@ window.initializeCodeFolding = function(show) {
     $(this).detach().appendTo(div);
 
     // add a show code button right above
-    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Code') + '</span>');
+    var showCodeText = $('<span>' + (showThis ? 'Hide' : 'Show') + '</span>');
     var showCodeButton = $('<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm code-folding-btn pull-right float-right"></button>');
     showCodeButton.append(showCodeText);
     showCodeButton
         .attr('data-toggle', 'collapse')
+        .attr('data-bs-toggle', 'collapse') // BS5
         .attr('data-target', '#' + id)
+        .attr('data-bs-target', '#' + id)   // BS5
         .attr('aria-expanded', showThis)
         .attr('aria-controls', id);
 
@@ -1533,7 +1537,7 @@ window.initializeCodeFolding = function(show) {
     //   * Change text
     //   * add a class for intermediate states styling
     div.on('hide.bs.collapse', function () {
-      showCodeText.text('Code');
+      showCodeText.text('Show');
       showCodeButton.addClass('btn-collapsing');
     });
     div.on('hidden.bs.collapse', function () {
@@ -1604,6 +1608,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 #rmd-source-code {
 display: none;
@@ -1634,6 +1639,9 @@ outline: none;
 }
 summary {
 display: list-item;
+}
+details > summary > p:only-child {
+display: inline;
 }
 pre code {
 padding: 0;
@@ -1674,23 +1682,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -1733,7 +1735,7 @@ display: none;
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -1744,65 +1746,32 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">R Notebook</h1>
+<h1 class="title toc-ignore">Paper Citation Analysis</h1>
 
 </div>
 
 
 <!-- rnb-text-begin -->
+<div id="load-data" class="section level2">
+<h2>Load Data</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGRwbHlyKVxubGlicmFyeShwc3ljaClcbmxpYnJhcnkobGZlKVxuYGBgIn0= -->
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
+library(psych)
+library(lfe)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdkYnBseXInOlxuICBtZXRob2QgICAgICAgICBmcm9tXG4gIHByaW50LnRibF9sYXp5ICAgICBcbiAgcHJpbnQudGJsX3NxbCAgICAgIFxu4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4xIOKUgOKUgFxu4pyUIGdncGxvdDIgMy40LjIgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjEuNiAgICAg4pyUIGRwbHlyICAgMS4wLjlcbuKclCB0aWR5ciAgIDEuMi4wICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMi4xLjIgICAgIOKclCBmb3JjYXRzIDAuNS4xXG5XYXJuaW5nOiBwYWNrYWdlIOKAmHRpYmJsZeKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJh0aWR5cuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJhyZWFkcuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJhkcGx5cuKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xV2FybmluZzogcGFja2FnZSDigJhzdHJpbmdy4oCZIHdhcyBidWlsdCB1bmRlciBSIHZlcnNpb24gNC4xLjFXYXJuaW5nOiBwYWNrYWdlIOKAmGZvcmNhdHPigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiA0LjEuMeKUgOKUgCBDb25mbGljdHMg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAIHRpZHl2ZXJzZV9jb25mbGljdHMoKSDilIDilIBcbuKcliBkcGx5cjo6ZmlsdGVyKCkgbWFza3Mgc3RhdHM6OmZpbHRlcigpXG7inJYgZHBseXI6OmxhZygpICAgIG1hc2tzIHN0YXRzOjpsYWcoKVxuIn0= -->
-<pre><code>Registered S3 methods overwritten by &#39;dbplyr&#39;:
-  method         from
-  print.tbl_lazy     
-  print.tbl_sql      
-── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
-✔ ggplot2 3.4.2     ✔ purrr   0.3.4
-✔ tibble  3.1.6     ✔ dplyr   1.0.9
-✔ tidyr   1.2.0     ✔ stringr 1.4.0
-✔ readr   2.1.2     ✔ forcats 0.5.1
-Warning: package ‘tibble’ was built under R version 4.1.1Warning: package ‘tidyr’ was built under R version 4.1.1Warning: package ‘readr’ was built under R version 4.1.1Warning: package ‘dplyr’ was built under R version 4.1.1Warning: package ‘stringr’ was built under R version 4.1.1Warning: package ‘forcats’ was built under R version 4.1.1── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmxpYnJhcnkocHN5Y2gpXG5gYGAifQ== -->
-<pre class="r"><code>library(dplyr)
-library(psych)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSDigJhwc3ljaOKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYcHN5Y2jigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3RzIGFyZSBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmdncGxvdDLigJk6XG5cbiAgICAlKyUsIGFscGhhXG4ifQ== -->
-<pre><code>Warning: package ‘psych’ was built under R version 4.1.1
-Attaching package: ‘psych’
-
-The following objects are masked from ‘package:ggplot2’:
-
-    %+%, alpha</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsZmUpXG5gYGAifQ== -->
-<pre class="r"><code>library(lfe)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogcGFja2FnZSDigJhsZmXigJkgd2FzIGJ1aWx0IHVuZGVyIFIgdmVyc2lvbiA0LjEuMUxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogTWF0cml4XG5XYXJuaW5nOiBwYWNrYWdlIOKAmE1hdHJpeOKAmSB3YXMgYnVpbHQgdW5kZXIgUiB2ZXJzaW9uIDQuMS4xXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYTWF0cml44oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTp0aWR5cuKAmTpcblxuICAgIGV4cGFuZCwgcGFjaywgdW5wYWNrXG4ifQ== -->
-<pre><code>Warning: package ‘lfe’ was built under R version 4.1.1Loading required package: Matrix
-Warning: package ‘Matrix’ was built under R version 4.1.1
-Attaching package: ‘Matrix’
-
-The following objects are masked from ‘package:tidyr’:
-
-    expand, pack, unpack</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVhZC5jc3YoXCIuL0RhdGEvQ2l0YXRpb24uY3N2XCIpXG5zdW1tYXJ5KGRmKVxuYGBgIn0= -->
 <pre class="r"><code>df &lt;- read.csv(&quot;./Data/Citation.csv&quot;)
 summary(df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgIFggICAgICAgICAgICAgUGFwZXJJRCAgICAgICAgICAgICBZZWFyICAgICAgUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSBBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCBBdXRob3JDbG9zZW5lc3NDZW50cmFsaXR5X01heFxuIE1pbi4gICA6ICAgICAwICAgTWluLiAgIDogICAxMDAxICAgTWluLiAgIDoxOTkyICAgTWluLiAgIDowLjAwMGUrMDAgICAgICBNaW4uICAgOjAuMDAwMDAwMCAgICAgICAgICBNaW4uICAgOjAuMDAwZSswMCAgICAgICAgICAgIFxuIDFzdCBRdS46IDQyMTQwICAgMXN0IFF1Ljo5MjEyMTU1ICAgMXN0IFF1LjoxOTk4ICAgMXN0IFF1LjozLjczMmUtMDUgICAgICAxc3QgUXUuOjAuMDAwMTQ0MSAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgIFxuIE1lZGlhbiA6IDg0MjgxICAgTWVkaWFuIDo5NTAyMTM2ICAgTWVkaWFuIDoyMDAwICAgTWVkaWFuIDoxLjQ5M2UtMDQgICAgICBNZWRpYW4gOjAuMDAwMzgzMCAgICAgICAgICBNZWRpYW4gOjIuNDY0ZS0wNCAgICAgICAgICAgIFxuIE1lYW4gICA6IDg0MjgxICAgTWVhbiAgIDo3OTM2NTkxICAgTWVhbiAgIDoyMDAwICAgTWVhbiAgIDo1LjE1OWUtMDQgICAgICBNZWFuICAgOjAuMDAwNTc3NSAgICAgICAgICBNZWFuICAgOjYuNTUwZS0wNCAgICAgICAgICAgIFxuIDNyZCBRdS46MTI2NDIyICAgM3JkIFF1Ljo5NzA0MTgxICAgM3JkIFF1LjoyMDAyICAgM3JkIFF1Ljo0LjY4MmUtMDQgICAgICAzcmQgUXUuOjAuMDAwODAzNSAgICAgICAgICAzcmQgUXUuOjcuMzA0ZS0wNCAgICAgICAgICAgIFxuIE1heC4gICA6MTY4NTYyICAgTWF4LiAgIDo5OTEyMjkzICAgTWF4LiAgIDoyMDAzICAgTWF4LiAgIDo4LjY5M2UtMDIgICAgICBNYXguICAgOjAuMDA2NzMxNSAgICAgICAgICBNYXguICAgOjEuMDI3ZS0wMiAgICAgICAgICAgIFxuIEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtIEF1dGhvckNsb3NlbmVzc0NlbnRyYWxpdHlfU3VtICAgWWVhcnNUb05vdyAgICAgIFJlZmVyZW5jZU51bSAgICAgICBBdXRob3JOdW0gICAgXG4gTWluLiAgIDowLjAwMDAwMDAgICAgICAgICAgTWluLiAgIDowLjAwMGUrMDAgICAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICBNaW4uICAgOiAgMC4wMDAgICBNaW4uICAgOjEuMDAwICBcbiAxc3QgUXUuOjAuMDAwMjAxNiAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgICAxc3QgUXUuOiAxLjAwMCAgIDFzdCBRdS46ICAxLjAwMCAgIDFzdCBRdS46MS4wMDAgIFxuIE1lZGlhbiA6MC4wMDA1NDM5ICAgICAgICAgIE1lZGlhbiA6Mi44ODJlLTA0ICAgICAgICAgICAgIE1lZGlhbiA6IDMuMDAwICAgTWVkaWFuIDogIDUuMDAwICAgTWVkaWFuIDoyLjAwMCAgXG4gTWVhbiAgIDowLjAwMDg1MDMgICAgICAgICAgTWVhbiAgIDo4LjEzNGUtMDQgICAgICAgICAgICAgTWVhbiAgIDogMy4zMjYgICBNZWFuICAgOiAgOS44MzIgICBNZWFuICAgOjEuOTM4ICBcbiAzcmQgUXUuOjAuMDAxMTQ5MSAgICAgICAgICAzcmQgUXUuOjguODM3ZS0wNCAgICAgICAgICAgICAzcmQgUXUuOiA1LjAwMCAgIDNyZCBRdS46IDE0LjAwMCAgIDNyZCBRdS46Mi4wMDAgIFxuIE1heC4gICA6MC4wMTY0NTQ3ICAgICAgICAgIE1heC4gICA6Mi4zMDZlLTAyICAgICAgICAgICAgIE1heC4gICA6MTIuMDAwICAgTWF4LiAgIDo1NjIuMDAwICAgTWF4LiAgIDo5LjAwMCAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgIFggICAgICAgICAgICAgUGFwZXJJRCAgICAgICAgICAgICBZZWFyICAgICAgUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSBBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCBBdXRob3JDbG9zZW5lc3NDZW50cmFsaXR5X01heFxuIE1pbi4gICA6ICAgICAwICAgTWluLiAgIDogICAxMDAxICAgTWluLiAgIDoxOTkyICAgTWluLiAgIDowLjAwMGUrMDAgICAgICBNaW4uICAgOjAuMDAwMDAwMCAgICAgICAgICBNaW4uICAgOjAuMDAwZSswMCAgICAgICAgICAgIFxuIDFzdCBRdS46IDQyMTQxICAgMXN0IFF1Ljo5MjEyMTU1ICAgMXN0IFF1LjoxOTk4ICAgMXN0IFF1LjozLjczMmUtMDUgICAgICAxc3QgUXUuOjAuMDAwMTQ0MSAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgIFxuIE1lZGlhbiA6IDg0MjgxICAgTWVkaWFuIDo5NTAyMTM2ICAgTWVkaWFuIDoyMDAwICAgTWVkaWFuIDoxLjQ5M2UtMDQgICAgICBNZWRpYW4gOjAuMDAwMzgzMCAgICAgICAgICBNZWRpYW4gOjIuNDY0ZS0wNCAgICAgICAgICAgIFxuIE1lYW4gICA6IDg0MjgxICAgTWVhbiAgIDo3OTM2NTkxICAgTWVhbiAgIDoyMDAwICAgTWVhbiAgIDo1LjE1OWUtMDQgICAgICBNZWFuICAgOjAuMDAwNTc3NSAgICAgICAgICBNZWFuICAgOjYuNTUwZS0wNCAgICAgICAgICAgIFxuIDNyZCBRdS46MTI2NDIyICAgM3JkIFF1Ljo5NzA0MTgxICAgM3JkIFF1LjoyMDAyICAgM3JkIFF1Ljo0LjY4MmUtMDQgICAgICAzcmQgUXUuOjAuMDAwODAzNSAgICAgICAgICAzcmQgUXUuOjcuMzA0ZS0wNCAgICAgICAgICAgIFxuIE1heC4gICA6MTY4NTYyICAgTWF4LiAgIDo5OTEyMjkzICAgTWF4LiAgIDoyMDAzICAgTWF4LiAgIDo4LjY5M2UtMDIgICAgICBNYXguICAgOjAuMDA2NzMxNSAgICAgICAgICBNYXguICAgOjEuMDI3ZS0wMiAgICAgICAgICAgIFxuIEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtIEF1dGhvckNsb3NlbmVzc0NlbnRyYWxpdHlfU3VtICAgWWVhcnNUb05vdyAgICAgIFJlZmVyZW5jZU51bSAgICAgICBBdXRob3JOdW0gICAgXG4gTWluLiAgIDowLjAwMDAwMDAgICAgICAgICAgTWluLiAgIDowLjAwMGUrMDAgICAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICBNaW4uICAgOiAgMC4wMDAgICBNaW4uICAgOjEuMDAwICBcbiAxc3QgUXUuOjAuMDAwMjAxNiAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgICAxc3QgUXUuOiAxLjAwMCAgIDFzdCBRdS46ICAxLjAwMCAgIDFzdCBRdS46MS4wMDAgIFxuIE1lZGlhbiA6MC4wMDA1NDM5ICAgICAgICAgIE1lZGlhbiA6Mi44ODJlLTA0ICAgICAgICAgICAgIE1lZGlhbiA6IDMuMDAwICAgTWVkaWFuIDogIDUuMDAwICAgTWVkaWFuIDoyLjAwMCAgXG4gTWVhbiAgIDowLjAwMDg1MDMgICAgICAgICAgTWVhbiAgIDo4LjEzNGUtMDQgICAgICAgICAgICAgTWVhbiAgIDogMy4zMjYgICBNZWFuICAgOiAgOS44MzIgICBNZWFuICAgOjEuOTM4ICBcbiAzcmQgUXUuOjAuMDAxMTQ5MSAgICAgICAgICAzcmQgUXUuOjguODM3ZS0wNCAgICAgICAgICAgICAzcmQgUXUuOiA1LjAwMCAgIDNyZCBRdS46IDE0LjAwMCAgIDNyZCBRdS46Mi4wMDAgIFxuIE1heC4gICA6MC4wMTY0NTQ3ICAgICAgICAgIE1heC4gICA6Mi4zMDZlLTAyICAgICAgICAgICAgIE1heC4gICA6MTIuMDAwICAgTWF4LiAgIDo1NjIuMDAwICAgTWF4LiAgIDo5LjAwMCAgXG4ifQ== -->
 <pre><code>       X             PaperID             Year      PaperImportance_Degree AuthorDegreeCentrality_Max AuthorClosenessCentrality_Max
  Min.   :     0   Min.   :   1001   Min.   :1992   Min.   :0.000e+00      Min.   :0.0000000          Min.   :0.000e+00            
- 1st Qu.: 42140   1st Qu.:9212155   1st Qu.:1998   1st Qu.:3.732e-05      1st Qu.:0.0001441          1st Qu.:6.721e-05            
+ 1st Qu.: 42141   1st Qu.:9212155   1st Qu.:1998   1st Qu.:3.732e-05      1st Qu.:0.0001441          1st Qu.:6.721e-05            
  Median : 84281   Median :9502136   Median :2000   Median :1.493e-04      Median :0.0003830          Median :2.464e-04            
  Mean   : 84281   Mean   :7936591   Mean   :2000   Mean   :5.159e-04      Mean   :0.0005775          Mean   :6.550e-04            
  3rd Qu.:126422   3rd Qu.:9704181   3rd Qu.:2002   3rd Qu.:4.682e-04      3rd Qu.:0.0008035          3rd Qu.:7.304e-04            
@@ -1819,26 +1788,200 @@ summary(df)</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgJT4lXG4gIG11dGF0ZShQYXBlcklEPWFzLmZhY3RvcihQYXBlcklEKSkgJT4lXG4gIGdyb3VwX2J5KFBhcGVySUQpICU+JVxuICBtdXRhdGUoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSA9IGxhZyhBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lXG4gIG11dGF0ZShBdXRob3JEZWdyZWVDZW50cmFsaXR5X1N1bV9MYWcxID0gbGFnKEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtLCBuPTEsIG9yZGVyX2J5PVllYXIpKSAtPlxuICBleHBlcmltZW50X2RhdGFcblxuc3VtbWFyeShleHBlcmltZW50X2RhdGEpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgJT4lXG4gIG11dGF0ZShQYXBlcklEPWFzLmZhY3RvcihQYXBlcklEKSkgJT4lXG4gIGdyb3VwX2J5KFBhcGVySUQpICU+JVxuICBtdXRhdGUoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSA9IGxhZyhBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lXG4gIG11dGF0ZShBdXRob3JEZWdyZWVDZW50cmFsaXR5X1N1bV9MYWcxID0gbGFnKEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtLCBuPTEsIG9yZGVyX2J5PVllYXIpKSAlPiVcbiAgdW5ncm91cCgpICU+JVxuICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWU9QXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXgpICU+JVxuICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9NYXhDbG9zZW5lc3M9QXV0aG9yQ2xvc2VuZXNzQ2VudHJhbGl0eV9NYXgpICU+JVxuICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWU9QXV0aG9yRGVncmVlQ2VudHJhbGl0eV9TdW0gKSAlPiVcbiAgbXV0YXRlKEF1dGhvckltcG9ydGFuY2VfU3VtQ2xvc2VuZXNzPUF1dGhvckNsb3NlbmVzc0NlbnRyYWxpdHlfU3VtICkgLT5cbiAgZXhwZXJpbWVudF9kYXRhXG5cbnN1bW1hcnkoZXhwZXJpbWVudF9kYXRhKVxuYGBgIn0= -->
 <pre class="r"><code>df %&gt;%
   mutate(PaperID=as.factor(PaperID)) %&gt;%
   group_by(PaperID) %&gt;%
   mutate(AuthorDegreeCentrality_Max_Lag1 = lag(AuthorDegreeCentrality_Max, n=1, order_by=Year)) %&gt;%
-  mutate(AuthorDegreeCentrality_Sum_Lag1 = lag(AuthorDegreeCentrality_Sum, n=1, order_by=Year)) -&gt;
+  mutate(AuthorDegreeCentrality_Sum_Lag1 = lag(AuthorDegreeCentrality_Sum, n=1, order_by=Year)) %&gt;%
+  ungroup() %&gt;%
+  mutate(AuthorImportance_MaxDegree=AuthorDegreeCentrality_Max) %&gt;%
+  mutate(AuthorImportance_MaxCloseness=AuthorClosenessCentrality_Max) %&gt;%
+  mutate(AuthorImportance_SumDegree=AuthorDegreeCentrality_Sum ) %&gt;%
+  mutate(AuthorImportance_SumCloseness=AuthorClosenessCentrality_Sum ) -&gt;
   experiment_data
 
 summary(experiment_data)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgIFggICAgICAgICAgICAgUGFwZXJJRCAgICAgICAgICAgIFllYXIgICAgICBQYXBlckltcG9ydGFuY2VfRGVncmVlIEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfTWF4IEF1dGhvckNsb3NlbmVzc0NlbnRyYWxpdHlfTWF4XG4gTWluLiAgIDogICAgIDAgICA5MjAxMDAxOiAgICAxMiAgIE1pbi4gICA6MTk5MiAgIE1pbi4gICA6MC4wMDBlKzAwICAgICAgTWluLiAgIDowLjAwMDAwMDAgICAgICAgICAgTWluLiAgIDowLjAwMGUrMDAgICAgICAgICAgICBcbiAxc3QgUXUuOiA0MjE0MSAgIDkyMDEwMDI6ICAgIDEyICAgMXN0IFF1LjoxOTk4ICAgMXN0IFF1LjozLjczMmUtMDUgICAgICAxc3QgUXUuOjAuMDAwMTQ0MSAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgIFxuIE1lZGlhbiA6IDg0MjgxICAgOTIwMTAwMzogICAgMTIgICBNZWRpYW4gOjIwMDAgICBNZWRpYW4gOjEuNDkzZS0wNCAgICAgIE1lZGlhbiA6MC4wMDAzODMwICAgICAgICAgIE1lZGlhbiA6Mi40NjRlLTA0ICAgICAgICAgICAgXG4gTWVhbiAgIDogODQyODEgICA5MjAxMDA0OiAgICAxMiAgIE1lYW4gICA6MjAwMCAgIE1lYW4gICA6NS4xNTllLTA0ICAgICAgTWVhbiAgIDowLjAwMDU3NzUgICAgICAgICAgTWVhbiAgIDo2LjU1MGUtMDQgICAgICAgICAgICBcbiAzcmQgUXUuOjEyNjQyMiAgIDkyMDEwMDU6ICAgIDEyICAgM3JkIFF1LjoyMDAyICAgM3JkIFF1Ljo0LjY4MmUtMDQgICAgICAzcmQgUXUuOjAuMDAwODAzNSAgICAgICAgICAzcmQgUXUuOjcuMzA0ZS0wNCAgICAgICAgICAgIFxuIE1heC4gICA6MTY4NTYyICAgOTIwMTAwNjogICAgMTIgICBNYXguICAgOjIwMDMgICBNYXguICAgOjguNjkzZS0wMiAgICAgIE1heC4gICA6MC4wMDY3MzE1ICAgICAgICAgIE1heC4gICA6MS4wMjdlLTAyICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAoT3RoZXIpOjE2ODQ5MSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcbiBBdXRob3JEZWdyZWVDZW50cmFsaXR5X1N1bSBBdXRob3JDbG9zZW5lc3NDZW50cmFsaXR5X1N1bSAgIFllYXJzVG9Ob3cgICAgICBSZWZlcmVuY2VOdW0gICAgICAgQXV0aG9yTnVtICAgICBBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heF9MYWcxXG4gTWluLiAgIDowLjAwMDAwMDAgICAgICAgICAgTWluLiAgIDowLjAwMGUrMDAgICAgICAgICAgICAgTWluLiAgIDogMC4wMDAgICBNaW4uICAgOiAgMC4wMDAgICBNaW4uICAgOjEuMDAwICAgTWluLiAgIDowLjAwMCAgICAgICAgICAgICAgICAgIFxuIDFzdCBRdS46MC4wMDAyMDE2ICAgICAgICAgIDFzdCBRdS46Ni43MjFlLTA1ICAgICAgICAgICAgIDFzdCBRdS46IDEuMDAwICAgMXN0IFF1LjogIDEuMDAwICAgMXN0IFF1LjoxLjAwMCAgIDFzdCBRdS46MC4wMDAgICAgICAgICAgICAgICAgICBcbiBNZWRpYW4gOjAuMDAwNTQzOSAgICAgICAgICBNZWRpYW4gOjIuODgyZS0wNCAgICAgICAgICAgICBNZWRpYW4gOiAzLjAwMCAgIE1lZGlhbiA6ICA1LjAwMCAgIE1lZGlhbiA6Mi4wMDAgICBNZWRpYW4gOjAuMDAwICAgICAgICAgICAgICAgICAgXG4gTWVhbiAgIDowLjAwMDg1MDMgICAgICAgICAgTWVhbiAgIDo4LjEzNGUtMDQgICAgICAgICAgICAgTWVhbiAgIDogMy4zMjYgICBNZWFuICAgOiAgOS44MzIgICBNZWFuICAgOjEuOTM4ICAgTWVhbiAgIDowLjAwMSAgICAgICAgICAgICAgICAgIFxuIDNyZCBRdS46MC4wMDExNDkxICAgICAgICAgIDNyZCBRdS46OC44MzdlLTA0ICAgICAgICAgICAgIDNyZCBRdS46IDUuMDAwICAgM3JkIFF1LjogMTQuMDAwICAgM3JkIFF1LjoyLjAwMCAgIDNyZCBRdS46MC4wMDEgICAgICAgICAgICAgICAgICBcbiBNYXguICAgOjAuMDE2NDU0NyAgICAgICAgICBNYXguICAgOjIuMzA2ZS0wMiAgICAgICAgICAgICBNYXguICAgOjEyLjAwMCAgIE1heC4gICA6NTYyLjAwMCAgIE1heC4gICA6OS4wMDAgICBNYXguICAgOjAuMDA3ICAgICAgICAgICAgICAgICAgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTkEncyAgIDoyNzc3MCAgICAgICAgICAgICAgICAgIFxuIEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtX0xhZzEgQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUgQXV0aG9ySW1wb3J0YW5jZV9NYXhDbG9zZW5lc3MgQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWVcbiBNaW4uICAgOjAuMDAwICAgICAgICAgICAgICAgICAgIE1pbi4gICA6MC4wMDAwMDAwICAgICAgICAgIE1pbi4gICA6MC4wMDBlKzAwICAgICAgICAgICAgIE1pbi4gICA6MC4wMDAwMDAwICAgICAgICAgXG4gMXN0IFF1LjowLjAwMCAgICAgICAgICAgICAgICAgICAxc3QgUXUuOjAuMDAwMTQ0MSAgICAgICAgICAxc3QgUXUuOjYuNzIxZS0wNSAgICAgICAgICAgICAxc3QgUXUuOjAuMDAwMjAxNiAgICAgICAgIFxuIE1lZGlhbiA6MC4wMDEgICAgICAgICAgICAgICAgICAgTWVkaWFuIDowLjAwMDM4MzAgICAgICAgICAgTWVkaWFuIDoyLjQ2NGUtMDQgICAgICAgICAgICAgTWVkaWFuIDowLjAwMDU0MzkgICAgICAgICBcbiBNZWFuICAgOjAuMDAxICAgICAgICAgICAgICAgICAgIE1lYW4gICA6MC4wMDA1Nzc1ICAgICAgICAgIE1lYW4gICA6Ni41NTBlLTA0ICAgICAgICAgICAgIE1lYW4gICA6MC4wMDA4NTAzICAgICAgICAgXG4gM3JkIFF1LjowLjAwMSAgICAgICAgICAgICAgICAgICAzcmQgUXUuOjAuMDAwODAzNSAgICAgICAgICAzcmQgUXUuOjcuMzA0ZS0wNCAgICAgICAgICAgICAzcmQgUXUuOjAuMDAxMTQ5MSAgICAgICAgIFxuIE1heC4gICA6MC4wMTYgICAgICAgICAgICAgICAgICAgTWF4LiAgIDowLjAwNjczMTUgICAgICAgICAgTWF4LiAgIDoxLjAyN2UtMDIgICAgICAgICAgICAgTWF4LiAgIDowLjAxNjQ1NDcgICAgICAgICBcbiBOQSdzICAgOjI3NzcwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG4gQXV0aG9ySW1wb3J0YW5jZV9TdW1DbG9zZW5lc3NcbiBNaW4uICAgOjAuMDAwZSswMCAgICAgICAgICAgIFxuIDFzdCBRdS46Ni43MjFlLTA1ICAgICAgICAgICAgXG4gTWVkaWFuIDoyLjg4MmUtMDQgICAgICAgICAgICBcbiBNZWFuICAgOjguMTM0ZS0wNCAgICAgICAgICAgIFxuIDNyZCBRdS46OC44MzdlLTA0ICAgICAgICAgICAgXG4gTWF4LiAgIDoyLjMwNmUtMDIgICAgICAgICAgICBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code>       X             PaperID            Year      PaperImportance_Degree AuthorDegreeCentrality_Max AuthorClosenessCentrality_Max
+ Min.   :     0   9201001:    12   Min.   :1992   Min.   :0.000e+00      Min.   :0.0000000          Min.   :0.000e+00            
+ 1st Qu.: 42141   9201002:    12   1st Qu.:1998   1st Qu.:3.732e-05      1st Qu.:0.0001441          1st Qu.:6.721e-05            
+ Median : 84281   9201003:    12   Median :2000   Median :1.493e-04      Median :0.0003830          Median :2.464e-04            
+ Mean   : 84281   9201004:    12   Mean   :2000   Mean   :5.159e-04      Mean   :0.0005775          Mean   :6.550e-04            
+ 3rd Qu.:126422   9201005:    12   3rd Qu.:2002   3rd Qu.:4.682e-04      3rd Qu.:0.0008035          3rd Qu.:7.304e-04            
+ Max.   :168562   9201006:    12   Max.   :2003   Max.   :8.693e-02      Max.   :0.0067315          Max.   :1.027e-02            
+                  (Other):168491                                                                                                 
+ AuthorDegreeCentrality_Sum AuthorClosenessCentrality_Sum   YearsToNow      ReferenceNum       AuthorNum     AuthorDegreeCentrality_Max_Lag1
+ Min.   :0.0000000          Min.   :0.000e+00             Min.   : 0.000   Min.   :  0.000   Min.   :1.000   Min.   :0.000                  
+ 1st Qu.:0.0002016          1st Qu.:6.721e-05             1st Qu.: 1.000   1st Qu.:  1.000   1st Qu.:1.000   1st Qu.:0.000                  
+ Median :0.0005439          Median :2.882e-04             Median : 3.000   Median :  5.000   Median :2.000   Median :0.000                  
+ Mean   :0.0008503          Mean   :8.134e-04             Mean   : 3.326   Mean   :  9.832   Mean   :1.938   Mean   :0.001                  
+ 3rd Qu.:0.0011491          3rd Qu.:8.837e-04             3rd Qu.: 5.000   3rd Qu.: 14.000   3rd Qu.:2.000   3rd Qu.:0.001                  
+ Max.   :0.0164547          Max.   :2.306e-02             Max.   :12.000   Max.   :562.000   Max.   :9.000   Max.   :0.007                  
+                                                                                                             NA&#39;s   :27770                  
+ AuthorDegreeCentrality_Sum_Lag1 AuthorImportance_MaxDegree AuthorImportance_MaxCloseness AuthorImportance_SumDegree
+ Min.   :0.000                   Min.   :0.0000000          Min.   :0.000e+00             Min.   :0.0000000         
+ 1st Qu.:0.000                   1st Qu.:0.0001441          1st Qu.:6.721e-05             1st Qu.:0.0002016         
+ Median :0.001                   Median :0.0003830          Median :2.464e-04             Median :0.0005439         
+ Mean   :0.001                   Mean   :0.0005775          Mean   :6.550e-04             Mean   :0.0008503         
+ 3rd Qu.:0.001                   3rd Qu.:0.0008035          3rd Qu.:7.304e-04             3rd Qu.:0.0011491         
+ Max.   :0.016                   Max.   :0.0067315          Max.   :1.027e-02             Max.   :0.0164547         
+ NA&#39;s   :27770                                                                                                      
+ AuthorImportance_SumCloseness
+ Min.   :0.000e+00            
+ 1st Qu.:6.721e-05            
+ Median :2.882e-04            
+ Mean   :8.134e-04            
+ 3rd Qu.:8.837e-04            
+ Max.   :2.306e-02            
+                              </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Correlation matrix</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXJcblxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWUnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpXG5cbmV4cGVyaW1lbnRfZGF0YSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxubW9kZWwgPC0gZmVsbShmLCBkYXRhKVxuc3VtbWFyeShtb2RlbClcbnByaW50KG5yb3coZGF0YSkpXG5gYGAifQ== -->
-<pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorImportance_MaxDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
-
-col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorImportance_MaxDegree&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;ActorNum&#39;, &#39;Year&#39;)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXgnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQXV0aG9yTnVtJylcblxuZXhwZXJpbWVudF9kYXRhICU+JVxuICBzZWxlY3QoY29sX25hbWVzKSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxuY29yKGRhdGEpXG5gYGAifQ== -->
+<pre class="r"><code>col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorDegreeCentrality_Max&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;AuthorNum&#39;)
 
 experiment_data %&gt;%
+  select(col_names) %&gt;%
+  na.omit() -&gt;
+  data
+
+cor(data)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICAgICAgICAgICAgUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSBBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCAgWWVhcnNUb05vdyBSZWZlcmVuY2VOdW0gICBBdXRob3JOdW1cblBhcGVySW1wb3J0YW5jZV9EZWdyZWUgICAgICAgICAgICAgICAgIDEuMDAwMDAwMDAgICAgICAgICAgICAgICAgIDAuMTg1MjExNjEgIDAuMDUzNzIwMzcgICAgMC4xNTQzMDA5ICAwLjA2MzA1MTY0XG5BdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCAgICAgICAgICAgICAwLjE4NTIxMTYxICAgICAgICAgICAgICAgICAxLjAwMDAwMDAwIC0wLjA0Mjc4Njk5ICAgIDAuMTIxNzQyNyAgMC4zODM4MDI3NFxuWWVhcnNUb05vdyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMC4wNTM3MjAzNyAgICAgICAgICAgICAgICAtMC4wNDI3ODY5OSAgMS4wMDAwMDAwMCAgIC0wLjIxNTQwNTIgLTAuMDEyMjQzMjlcblJlZmVyZW5jZU51bSAgICAgICAgICAgICAgICAgICAgICAgICAgIDAuMTU0MzAwOTUgICAgICAgICAgICAgICAgIDAuMTIxNzQyNjcgLTAuMjE1NDA1MjAgICAgMS4wMDAwMDAwICAwLjAzODAwMzkwXG5BdXRob3JOdW0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwLjA2MzA1MTY0ICAgICAgICAgICAgICAgICAwLjM4MzgwMjc0IC0wLjAxMjI0MzI5ICAgIDAuMDM4MDAzOSAgMS4wMDAwMDAwMFxuIn0= -->
+<pre><code>                           PaperImportance_Degree AuthorDegreeCentrality_Max  YearsToNow ReferenceNum   AuthorNum
+PaperImportance_Degree                 1.00000000                 0.18521161  0.05372037    0.1543009  0.06305164
+AuthorDegreeCentrality_Max             0.18521161                 1.00000000 -0.04278699    0.1217427  0.38380274
+YearsToNow                             0.05372037                -0.04278699  1.00000000   -0.2154052 -0.01224329
+ReferenceNum                           0.15430095                 0.12174267 -0.21540520    1.0000000  0.03800390
+AuthorNum                              0.06305164                 0.38380274 -0.01224329    0.0380039  1.00000000</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2QoZGF0YSRBdXRob3JOdW0pXG5gYGAifQ== -->
+<pre class="r"><code>sd(data$AuthorNum)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuOTU3MDkxOVxuIn0= -->
+<pre><code>[1] 0.9570919</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="baseline-regression" class="section level2">
+<h2>Baseline Regression</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXggKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXJcblxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXgnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQXV0aG9yTnVtJywgJ1llYXInKVxuXG5leHBlcmltZW50X2RhdGEgJT4lXG4gIHNlbGVjdChjb2xfbmFtZXMpICU+JVxuICBuYS5vbWl0KCkgLT5cbiAgZGF0YVxuXG5tb2RlbCA8LSBmZWxtKGYsIGRhdGEpXG5zdW1tYXJ5KG1vZGVsKVxuYGBgIn0= -->
+<pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorDegreeCentrality_Max + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorDegreeCentrality_Max&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;AuthorNum&#39;, &#39;Year&#39;)
+
+experiment_data %&gt;%
+  select(col_names) %&gt;%
+  na.omit() -&gt;
+  data
+
+model &lt;- felm(f, data)
+summary(model)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuICAgZmVsbShmb3JtdWxhID0gZiwgZGF0YSA9IGRhdGEpIFxuXG5SZXNpZHVhbHM6XG4gICAgICBNaW4gICAgICAgIDFRICAgIE1lZGlhbiAgICAgICAgM1EgICAgICAgTWF4IFxuLTAuMDA3MjY4IC0wLjAwMDQxNiAtMC4wMDAxOTIgIDAuMDAwMDc1ICAwLjA4NTUyNSBcblxuQ29lZmZpY2llbnRzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHQgdmFsdWUgUHIoPnx0fCkgICAgXG5BdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCAgMy42NzFlLTAxICA2LjIzMGUtMDMgIDU4LjkyOSAgIDwyZS0xNiAqKipcblllYXJzVG9Ob3cgICAgICAgICAgICAgICAgICA4Ljc5NGUtMDUgIDEuNTc3ZS0wNiAgNTUuNzY2ICAgPDJlLTE2ICoqKlxuUmVmZXJlbmNlTnVtICAgICAgICAgICAgICAgIDIuMTMwZS0wNSAgMi44NThlLTA3ICA3NC41MjAgICA8MmUtMTYgKioqXG5BdXRob3JOdW0gICAgICAgICAgICAgICAgICAtMy4zNDZlLTA3ICA0LjA1MmUtMDYgIC0wLjA4MyAgICAwLjkzNCAgICBcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAg4oCYKioq4oCZIDAuMDAxIOKAmCoq4oCZIDAuMDEg4oCYKuKAmSAwLjA1IOKAmC7igJkgMC4xIOKAmCDigJkgMVxuXG5SZXNpZHVhbCBzdGFuZGFyZCBlcnJvcjogMC4wMDE0NjQgb24gMTY4NTQ3IGRlZ3JlZXMgb2YgZnJlZWRvbVxuTXVsdGlwbGUgUi1zcXVhcmVkKGZ1bGwgbW9kZWwpOiAwLjA3MTAyICAgQWRqdXN0ZWQgUi1zcXVhcmVkOiAwLjA3MDk0IFxuTXVsdGlwbGUgUi1zcXVhcmVkKHByb2ogbW9kZWwpOiAwLjA3MDA2ICAgQWRqdXN0ZWQgUi1zcXVhcmVkOiAwLjA2OTk4IFxuRi1zdGF0aXN0aWMoZnVsbCBtb2RlbCk6ICA4NTkgb24gMTUgYW5kIDE2ODU0NyBERiwgcC12YWx1ZTogPCAyLjJlLTE2IFxuRi1zdGF0aXN0aWMocHJvaiBtb2RlbCk6ICAzMTc1IG9uIDQgYW5kIDE2ODU0NyBERiwgcC12YWx1ZTogPCAyLjJlLTE2IFxuIn0= -->
+<pre><code>
+Call:
+   felm(formula = f, data = data) 
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.007268 -0.000416 -0.000192  0.000075  0.085525 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+AuthorDegreeCentrality_Max  3.671e-01  6.230e-03  58.929   &lt;2e-16 ***
+YearsToNow                  8.794e-05  1.577e-06  55.766   &lt;2e-16 ***
+ReferenceNum                2.130e-05  2.858e-07  74.520   &lt;2e-16 ***
+AuthorNum                  -3.346e-07  4.052e-06  -0.083    0.934    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.001464 on 168547 degrees of freedom
+Multiple R-squared(full model): 0.07102   Adjusted R-squared: 0.07094 
+Multiple R-squared(proj model): 0.07006   Adjusted R-squared: 0.06998 
+F-statistic(full model):  859 on 15 and 168547 DF, p-value: &lt; 2.2e-16 
+F-statistic(proj model):  3175 on 4 and 168547 DF, p-value: &lt; 2.2e-16 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQobnJvdyhkYXRhKSlcbmBgYCJ9 -->
+<pre class="r"><code>print(nrow(data))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE2ODU2M1xuIn0= -->
+<pre><code>[1] 168563</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="robutstness-check" class="section level2">
+<h2>Robutstness check</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9TdW0gKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXJcblxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9TdW0nLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQXV0aG9yTnVtJywgJ1llYXInKVxuXG5leHBlcmltZW50X2RhdGEgJT4lXG4gIHNlbGVjdChjb2xfbmFtZXMgKSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxubW9kZWwgPC0gZmVsbShmLCBkYXRhKVxuc3VtbWFyeShtb2RlbClcbmBgYCJ9 -->
+<pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorDegreeCentrality_Sum + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorDegreeCentrality_Sum&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;AuthorNum&#39;, &#39;Year&#39;)
+
+experiment_data %&gt;%
+  select(col_names ) %&gt;%
+  na.omit() -&gt;
+  data
+
+model &lt;- felm(f, data)
+summary(model)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5DYWxsOlxuICAgZmVsbShmb3JtdWxhID0gZiwgZGF0YSA9IGRhdGEpIFxuXG5SZXNpZHVhbHM6XG4gICAgICBNaW4gICAgICAgIDFRICAgIE1lZGlhbiAgICAgICAgM1EgICAgICAgTWF4IFxuLTAuMDA3MDY2IC0wLjAwMDQxMCAtMC4wMDAxODYgIDAuMDAwMDc3ICAwLjA4NTUzMiBcblxuQ29lZmZpY2llbnRzOlxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFc3RpbWF0ZSBTdGQuIEVycm9yIHQgdmFsdWUgUHIoPnx0fCkgICAgXG5BdXRob3JEZWdyZWVDZW50cmFsaXR5X1N1bSAgMy4wNzVlLTAxICA0LjY4MGUtMDMgICA2NS43MiAgIDwyZS0xNiAqKipcblllYXJzVG9Ob3cgICAgICAgICAgICAgICAgICA4LjQ3MGUtMDUgIDEuNTc3ZS0wNiAgIDUzLjcyICAgPDJlLTE2ICoqKlxuUmVmZXJlbmNlTnVtICAgICAgICAgICAgICAgIDIuMDY3ZS0wNSAgMi44NjBlLTA3ICAgNzIuMjggICA8MmUtMTYgKioqXG5BdXRob3JOdW0gICAgICAgICAgICAgICAgICAtOS4zMjJlLTA1ICA0LjY3N2UtMDYgIC0xOS45MyAgIDwyZS0xNiAqKipcbi0tLVxuU2lnbmlmLiBjb2RlczogIDAg4oCYKioq4oCZIDAuMDAxIOKAmCoq4oCZIDAuMDEg4oCYKuKAmSAwLjA1IOKAmC7igJkgMC4xIOKAmCDigJkgMVxuXG5SZXNpZHVhbCBzdGFuZGFyZCBlcnJvcjogMC4wMDE0NjEgb24gMTY4NTQ3IGRlZ3JlZXMgb2YgZnJlZWRvbVxuTXVsdGlwbGUgUi1zcXVhcmVkKGZ1bGwgbW9kZWwpOiAwLjA3NTU2ICAgQWRqdXN0ZWQgUi1zcXVhcmVkOiAwLjA3NTQ4IFxuTXVsdGlwbGUgUi1zcXVhcmVkKHByb2ogbW9kZWwpOiAwLjA3NDYyICAgQWRqdXN0ZWQgUi1zcXVhcmVkOiAwLjA3NDUzIFxuRi1zdGF0aXN0aWMoZnVsbCBtb2RlbCk6OTE4LjUgb24gMTUgYW5kIDE2ODU0NyBERiwgcC12YWx1ZTogPCAyLjJlLTE2IFxuRi1zdGF0aXN0aWMocHJvaiBtb2RlbCk6ICAzMzk4IG9uIDQgYW5kIDE2ODU0NyBERiwgcC12YWx1ZTogPCAyLjJlLTE2IFxuIn0= -->
+<pre><code>
+Call:
+   felm(formula = f, data = data) 
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.007066 -0.000410 -0.000186  0.000077  0.085532 
+
+Coefficients:
+                             Estimate Std. Error t value Pr(&gt;|t|)    
+AuthorDegreeCentrality_Sum  3.075e-01  4.680e-03   65.72   &lt;2e-16 ***
+YearsToNow                  8.470e-05  1.577e-06   53.72   &lt;2e-16 ***
+ReferenceNum                2.067e-05  2.860e-07   72.28   &lt;2e-16 ***
+AuthorNum                  -9.322e-05  4.677e-06  -19.93   &lt;2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.001461 on 168547 degrees of freedom
+Multiple R-squared(full model): 0.07556   Adjusted R-squared: 0.07548 
+Multiple R-squared(proj model): 0.07462   Adjusted R-squared: 0.07453 
+F-statistic(full model):918.5 on 15 and 168547 DF, p-value: &lt; 2.2e-16 
+F-statistic(proj model):  3398 on 4 and 168547 DF, p-value: &lt; 2.2e-16 </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQobnJvdyhkYXRhKSlcbmBgYCJ9 -->
+<pre class="r"><code>print(nrow(data))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE2ODU2M1xuIn0= -->
+<pre><code>[1] 168563</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="endogeneity-check" class="section level2">
+<h2>Endogeneity check</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSArIFllYXJzVG9Ob3cgKyBSZWZlcmVuY2VOdW0gKyBBdXRob3JOdW0gIHwgWWVhclxuXG5jb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heF9MYWcxJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0F1dGhvck51bScsICdZZWFyJylcblxuZXhwZXJpbWVudF9kYXRhICU+JVxuICBzZWxlY3QoY29sX25hbWVzKSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxubW9kZWwgPC0gZmVsbShmLCBkYXRhKVxuc3VtbWFyeShtb2RlbClcbnByaW50KG5yb3coZGF0YSkpXG5gYGAifQ== -->
+<pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorDegreeCentrality_Max_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
+
+col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorDegreeCentrality_Max_Lag1&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;AuthorNum&#39;, &#39;Year&#39;)
+
+experiment_data %&gt;%
+  select(col_names) %&gt;%
   na.omit() -&gt;
   data
 
@@ -1848,44 +1991,10 @@ print(nrow(data))</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Endogeneity check</p>
 <!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWVfTGFnMSArIFllYXJzVG9Ob3cgKyBSZWZlcmVuY2VOdW0gKyBBdXRob3JOdW0gIHwgWWVhclxuXG5jb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZV9MYWcxJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0FjdG9yTnVtJywgJ1llYXInKVxuXG5leHBlcmltZW50X2RhdGEgJT4lXG4gIG5hLm9taXQoKSAtPlxuICBkYXRhXG5cbm1vZGVsIDwtIGZlbG0oZiwgZGF0YSlcbnN1bW1hcnkobW9kZWwpXG5cbmBgYCJ9 -->
-<pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorImportance_MaxDegree_Lag1 + YearsToNow + ReferenceNum + AuthorNum  | Year
+</div>
 
-col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorImportance_MaxDegree_Lag1&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;ActorNum&#39;, &#39;Year&#39;)
-
-experiment_data %&gt;%
-  na.omit() -&gt;
-  data
-
-model &lt;- felm(f, data)
-summary(model)
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>robutstness check</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWUgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXJcblxuY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWUnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpXG5cbmV4cGVyaW1lbnRfZGF0YSAlPiVcbiAgbmEub21pdCgpIC0+XG4gIGRhdGFcblxubW9kZWwgPC0gZmVsbShmLCBkYXRhKVxuc3VtbWFyeShtb2RlbClcbmBgYCJ9 -->
-<pre class="r"><code>f &lt;- PaperImportance_Degree ~ AuthorImportance_SumDegree + YearsToNow + ReferenceNum + AuthorNum  | Year
-
-col_names &lt;- c(&#39;PaperImportance_Degree&#39;, &#39;AuthorImportance_SumDegree&#39;, &#39;YearsToNow&#39;, &#39;ReferenceNum&#39;, &#39;ActorNum&#39;, &#39;Year&#39;)
-
-experiment_data %&gt;%
-  na.omit() -&gt;
-  data
-
-model &lt;- felm(f, data)
-summary(model)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpgYGB7cn0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoZHBseXIpCmxpYnJhcnkocHN5Y2gpCmxpYnJhcnkobGZlKQpgYGAKYGBge3J9CmRmIDwtIHJlYWQuY3N2KCIuL0RhdGEvQ2l0YXRpb24uY3N2IikKc3VtbWFyeShkZikKYGBgCgpgYGB7cn0KZGYgJT4lCiAgbXV0YXRlKFBhcGVySUQ9YXMuZmFjdG9yKFBhcGVySUQpKSAlPiUKICBncm91cF9ieShQYXBlcklEKSAlPiUKICBtdXRhdGUoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSA9IGxhZyhBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lCiAgbXV0YXRlKEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtX0xhZzEgPSBsYWcoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9TdW0sIG49MSwgb3JkZXJfYnk9WWVhcikpIC0+CiAgZXhwZXJpbWVudF9kYXRhCgpzdW1tYXJ5KGV4cGVyaW1lbnRfZGF0YSkKYGBgCgoKYGBge3J9CmYgPC0gUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSB+IEF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlICsgWWVhcnNUb05vdyArIFJlZmVyZW5jZU51bSArIEF1dGhvck51bSAgfCBZZWFyCgpjb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JJbXBvcnRhbmNlX01heERlZ3JlZScsICdZZWFyc1RvTm93JywgJ1JlZmVyZW5jZU51bScsICdBY3Rvck51bScsICdZZWFyJykKCmV4cGVyaW1lbnRfZGF0YSAlPiUKICBuYS5vbWl0KCkgLT4KICBkYXRhCgptb2RlbCA8LSBmZWxtKGYsIGRhdGEpCnN1bW1hcnkobW9kZWwpCnByaW50KG5yb3coZGF0YSkpCmBgYAoKRW5kb2dlbmVpdHkgY2hlY2sKYGBge3J9CmYgPC0gUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSB+IEF1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXIKCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckltcG9ydGFuY2VfTWF4RGVncmVlX0xhZzEnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQWN0b3JOdW0nLCAnWWVhcicpCgpleHBlcmltZW50X2RhdGEgJT4lCiAgbmEub21pdCgpIC0+CiAgZGF0YQoKbW9kZWwgPC0gZmVsbShmLCBkYXRhKQpzdW1tYXJ5KG1vZGVsKQoKYGBgCgpyb2J1dHN0bmVzcyBjaGVjawpgYGB7cn0KZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWUgKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXIKCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckltcG9ydGFuY2VfU3VtRGVncmVlJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0FjdG9yTnVtJywgJ1llYXInKQoKZXhwZXJpbWVudF9kYXRhICU+JQogIG5hLm9taXQoKSAtPgogIGRhdGEKCm1vZGVsIDwtIGZlbG0oZiwgZGF0YSkKc3VtbWFyeShtb2RlbCkKYGBgCgoKCgo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBhcGVyIENpdGF0aW9uIEFuYWx5c2lzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMgTG9hZCBEYXRhDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkocHN5Y2gpDQpsaWJyYXJ5KGxmZSkNCmBgYA0KYGBge3J9DQpkZiA8LSByZWFkLmNzdigiLi9EYXRhL0NpdGF0aW9uLmNzdiIpDQpzdW1tYXJ5KGRmKQ0KYGBgDQoNCmBgYHtyfQ0KZGYgJT4lDQogIG11dGF0ZShQYXBlcklEPWFzLmZhY3RvcihQYXBlcklEKSkgJT4lDQogIGdyb3VwX2J5KFBhcGVySUQpICU+JQ0KICBtdXRhdGUoQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSA9IGxhZyhBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCwgbj0xLCBvcmRlcl9ieT1ZZWFyKSkgJT4lDQogIG11dGF0ZShBdXRob3JEZWdyZWVDZW50cmFsaXR5X1N1bV9MYWcxID0gbGFnKEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtLCBuPTEsIG9yZGVyX2J5PVllYXIpKSAlPiUNCiAgdW5ncm91cCgpICU+JQ0KICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9NYXhEZWdyZWU9QXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXgpICU+JQ0KICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9NYXhDbG9zZW5lc3M9QXV0aG9yQ2xvc2VuZXNzQ2VudHJhbGl0eV9NYXgpICU+JQ0KICBtdXRhdGUoQXV0aG9ySW1wb3J0YW5jZV9TdW1EZWdyZWU9QXV0aG9yRGVncmVlQ2VudHJhbGl0eV9TdW0gKSAlPiUNCiAgbXV0YXRlKEF1dGhvckltcG9ydGFuY2VfU3VtQ2xvc2VuZXNzPUF1dGhvckNsb3NlbmVzc0NlbnRyYWxpdHlfU3VtICkgLT4NCiAgZXhwZXJpbWVudF9kYXRhDQoNCnN1bW1hcnkoZXhwZXJpbWVudF9kYXRhKQ0KYGBgDQoNCkNvcnJlbGF0aW9uIG1hdHJpeA0KYGBge3J9DQpjb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heCcsICdZZWFyc1RvTm93JywgJ1JlZmVyZW5jZU51bScsICdBdXRob3JOdW0nKQ0KDQpleHBlcmltZW50X2RhdGEgJT4lDQogIHNlbGVjdChjb2xfbmFtZXMpICU+JQ0KICBuYS5vbWl0KCkgLT4NCiAgZGF0YQ0KDQpjb3IoZGF0YSkNCmBgYA0KYGBge3J9DQpzZChkYXRhJEF1dGhvck51bSkNCmBgYA0KDQojIyBCYXNlbGluZSBSZWdyZXNzaW9uDQoNCmBgYHtyfQ0KZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXggKyBZZWFyc1RvTm93ICsgUmVmZXJlbmNlTnVtICsgQXV0aG9yTnVtICB8IFllYXINCg0KY29sX25hbWVzIDwtIGMoJ1BhcGVySW1wb3J0YW5jZV9EZWdyZWUnLCAnQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXgnLCAnWWVhcnNUb05vdycsICdSZWZlcmVuY2VOdW0nLCAnQXV0aG9yTnVtJywgJ1llYXInKQ0KDQpleHBlcmltZW50X2RhdGEgJT4lDQogIHNlbGVjdChjb2xfbmFtZXMpICU+JQ0KICBuYS5vbWl0KCkgLT4NCiAgZGF0YQ0KDQptb2RlbCA8LSBmZWxtKGYsIGRhdGEpDQpzdW1tYXJ5KG1vZGVsKQ0KcHJpbnQobnJvdyhkYXRhKSkNCmBgYA0KDQoNCg0KDQoNCiMjIFJvYnV0c3RuZXNzIGNoZWNrDQpgYGB7cn0NCmYgPC0gUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZSB+IEF1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtICsgWWVhcnNUb05vdyArIFJlZmVyZW5jZU51bSArIEF1dGhvck51bSAgfCBZZWFyDQoNCmNvbF9uYW1lcyA8LSBjKCdQYXBlckltcG9ydGFuY2VfRGVncmVlJywgJ0F1dGhvckRlZ3JlZUNlbnRyYWxpdHlfU3VtJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0F1dGhvck51bScsICdZZWFyJykNCg0KZXhwZXJpbWVudF9kYXRhICU+JQ0KICBzZWxlY3QoY29sX25hbWVzICkgJT4lDQogIG5hLm9taXQoKSAtPg0KICBkYXRhDQoNCm1vZGVsIDwtIGZlbG0oZiwgZGF0YSkNCnN1bW1hcnkobW9kZWwpDQoNCnByaW50KG5yb3coZGF0YSkpDQpgYGANCg0KIyMgRW5kb2dlbmVpdHkgY2hlY2sNCmBgYHtyfQ0KZiA8LSBQYXBlckltcG9ydGFuY2VfRGVncmVlIH4gQXV0aG9yRGVncmVlQ2VudHJhbGl0eV9NYXhfTGFnMSArIFllYXJzVG9Ob3cgKyBSZWZlcmVuY2VOdW0gKyBBdXRob3JOdW0gIHwgWWVhcg0KDQpjb2xfbmFtZXMgPC0gYygnUGFwZXJJbXBvcnRhbmNlX0RlZ3JlZScsICdBdXRob3JEZWdyZWVDZW50cmFsaXR5X01heF9MYWcxJywgJ1llYXJzVG9Ob3cnLCAnUmVmZXJlbmNlTnVtJywgJ0F1dGhvck51bScsICdZZWFyJykNCg0KZXhwZXJpbWVudF9kYXRhICU+JQ0KICBzZWxlY3QoY29sX25hbWVzKSAlPiUNCiAgbmEub21pdCgpIC0+DQogIGRhdGENCg0KbW9kZWwgPC0gZmVsbShmLCBkYXRhKQ0Kc3VtbWFyeShtb2RlbCkNCnByaW50KG5yb3coZGF0YSkpDQpgYGANCg0KDQo=</div>
 
 
 
