@@ -9,4 +9,3 @@ arxiv problems：
 stanford high energy physics theory citation dataset problems:
 1. About 20000+ paper ids can't be found in the abstract directory, I need to crawl them from arxiv
 2. Some paper ids are wrong. For example, 1001 should be 0001001. 119912033 should be 9912033. There are 7 digits for each paper.
-3. 
